@@ -10,12 +10,12 @@ namespace GeneticWorld.Model
         public List<double> Weights;
 
         public Neuron(IRandomGenerator randGen, int inputSize)
-        {       
+        {
             Bias = randGen.GetRandomNumberInRange(-1.0, 1.0);
 
             Weights = new List<double>();
-            for(int _ = 0; _ < inputSize; _++) 
-            { 
+            for (int _ = 0; _ < inputSize; _++)
+            {
                 Weights.Add(randGen.GetRandomNumberInRange(-1.0, 1.0));
             }
         }

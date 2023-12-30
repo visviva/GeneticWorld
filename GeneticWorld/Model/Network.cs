@@ -14,7 +14,7 @@
 
         public int CountLayers => Layers.Count;
 
-        public Network(IRandomGenerator randomGenerator ,List<LayerTopology> layerTopology)
+        public Network(IRandomGenerator randomGenerator, List<LayerTopology> layerTopology)
         {
             if (layerTopology.Count <= 1)
             {

@@ -11,7 +11,7 @@ namespace GeneticModelTest
         {
             testLayer = new Layer(new MockRandom(), 4, 3);
         }
-        
+
         [TestMethod]
         public void SuccessfullyCreateLayer()
         {
@@ -26,7 +26,7 @@ namespace GeneticModelTest
             var result = testLayer.Propagate([1, 1, 1, 1]);
             Assert.AreEqual(3, result.Count);
 
-            foreach (var entry in result) 
+            foreach (var entry in result)
             {
                 Assert.AreEqual(5, entry);
             }
