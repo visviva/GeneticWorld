@@ -17,6 +17,7 @@ namespace GeneticModelTest
         class FakeIndividual(double fitness) : IIndividual
         {
             public double Fitness { get; set; } = fitness;
+            public Chromosome Chromosome { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         }
 
         List<FakeIndividual> Population = [new(2), new(1), new(4), new(3)];

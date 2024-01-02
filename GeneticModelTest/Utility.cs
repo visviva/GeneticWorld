@@ -10,7 +10,7 @@ namespace GeneticModelTest
     {
         public static bool Equals(double x, double y, double tolerance)
         {
-            var diff = Math.Abs(x - y);
+            double diff = Math.Abs(x - y);
             return diff <= tolerance ||
                    diff <= Math.Max(Math.Abs(x), Math.Abs(y)) * tolerance;
         }

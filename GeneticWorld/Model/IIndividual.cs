@@ -1,11 +1,9 @@
-namespace GeneticWorld.Model
+﻿namespace GeneticWorld.Model;
+
+public interface IIndividual
 {
-    public interface IIndividual
-    {
-        double Fitness
-        {
-            get;
-        }
-    }
+    double Fitness { get; }
+
+    Chromosome Chromosome { get; set; }
 }
 

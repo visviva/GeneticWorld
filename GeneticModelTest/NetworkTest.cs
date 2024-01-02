@@ -17,7 +17,7 @@ namespace GeneticModelTest
             var layer_1 = new LayerTopology(3);
             var layer_2 = new LayerTopology(2);
             var layer_3 = new LayerTopology(1);
-            testNetwork = new Network(new MockRandom(), [layer_1, layer_2, layer_3 ]);
+            testNetwork = new Network(new MockRandom(), [layer_1, layer_2, layer_3]);
 
             Assert.IsNotNull(testNetwork);
             Assert.AreEqual(2, testNetwork.CountLayers);
@@ -26,7 +26,7 @@ namespace GeneticModelTest
         [TestMethod]
         public void PropagateInput()
         {
-            var testInput = new List<double> { 1.0, 1.0, 1.0};
+            var testInput = new List<double> { 1.0, 1.0, 1.0 };
 
             var result = testNetwork!.Propagate(testInput);
 

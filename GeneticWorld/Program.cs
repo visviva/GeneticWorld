@@ -1,4 +1,4 @@
-using GeneticWorld.Components;
+﻿using GeneticWorld.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
 
 var builder = WebApplication.CreateBuilder(args);

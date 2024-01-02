@@ -6,15 +6,15 @@ namespace GeneticWorld.Model
 {
     internal class Layer
     {
-        private readonly List<Neuron> Neurons;
+        private readonly List<Neuron> _neurons;
 
-        public int CountOfNeurons => Neurons.Count;
+        public int CountOfNeurons => _neurons.Count;
 
         public Layer(IRandomGenerator randomGenerator, int inputSize, int outputSize)
         {
-            Neurons = Enumerable.Range(0, outputSize).Select(i => new Neuron(randomGenerator, inputSize)).ToList();
+            _neurons = Enumerable.Range(0, outputSize).Select(i => new Neuron(randomGenerator, inputSize)).ToList();
         }
 
-        internal List<double> Propagate(List<double> inputs) => Neurons.Select(neuron => neuron.Propagate(inputs)).ToList();
+        internal List<double> Propagate(List<double> inputs) => _neurons.Select(neuron => neuron.Propagate(inputs)).ToList();
     }
 }

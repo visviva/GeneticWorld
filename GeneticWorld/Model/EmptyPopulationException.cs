@@ -1,20 +1,19 @@
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
-namespace GeneticWorld.Model
+namespace GeneticWorld.Model;
+
+[Serializable]
+public class EmptyPopulationException : Exception
 {
-    [Serializable]
-    internal class EmptyPopulationException : Exception
+    public EmptyPopulationException()
     {
-        public EmptyPopulationException()
-        {
-        }
+    }
 
-        public EmptyPopulationException(string? message) : base(message)
-        {
-        }
+    public EmptyPopulationException(string? message) : base(message)
+    {
+    }
 
-        public EmptyPopulationException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
+    public EmptyPopulationException(string? message, Exception? innerException) : base(message, innerException)
+    {
     }
 }
