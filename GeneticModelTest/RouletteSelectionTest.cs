@@ -7,7 +7,7 @@ namespace GeneticModelTest
     {
         class MockRandomGenerator : IRandomGenerator
         {
-            Random rng = new();
+            readonly Random rng = new();
             public double GetRandomNumberInRange(double minNumber, double maxNumber)
             {
                 return rng.NextDouble() * (maxNumber - minNumber) + minNumber;
@@ -18,9 +18,11 @@ namespace GeneticModelTest
         {
             public double Fitness { get; set; } = fitness;
             public Chromosome Chromosome { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+            public IIndividual create(Chromosome chromosome) => throw new NotImplementedException();
         }
 
-        List<FakeIndividual> Population = [new(2), new(1), new(4), new(3)];
+        readonly List<FakeIndividual> Population = [new(2), new(1), new(4), new(3)];
 
         [TestMethod]
         public void SuccessfullySelect()

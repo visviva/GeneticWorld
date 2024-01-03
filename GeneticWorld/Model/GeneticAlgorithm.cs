@@ -6,14 +6,16 @@ namespace GeneticWorld.Model;
 public class GeneticAlgorithm
 {
     readonly ISelectionMethod _selector;
-    private readonly ICrossover _crossover;
+    readonly ICrossover _crossover;
     readonly IRandomGenerator _randomGenerator;
+    readonly IMutationMethod _mutationMethod;
 
-    public GeneticAlgorithm(IRandomGenerator rng, ISelectionMethod selector, ICrossover crossover)
+    public GeneticAlgorithm(IRandomGenerator rng, ISelectionMethod selector, ICrossover crossover, IMutationMethod mutationMethod)
     {
         _selector = selector;
         _crossover = crossover;
         _randomGenerator = rng;
+        _mutationMethod = mutationMethod;
     }
 
     public List<T> Evolve<T>(List<T> population) where T : IIndividual
@@ -27,9 +29,9 @@ public class GeneticAlgorithm
 
         for (int i = 0; i < population.Count; i++)
         {
-            var parents = Selection(population);
-            var descendant = Crossover(parents);
-            var mutatedDescendant = Mutation(descendant);
+            (IIndividual, IIndividual) parents = Selection(population);
+            IIndividual descendant = Crossover(parents);
+            IIndividual mutatedDescendant = Mutation(descendant);
             newPopulation.Add((T)mutatedDescendant);
         }
 
@@ -41,15 +43,15 @@ public class GeneticAlgorithm
         return (_selector.Select(_randomGenerator, population), _selector.Select(_randomGenerator, population));
     }
 
-    private IIndividual Mutation(object descendant)
+    private IIndividual Mutation(IIndividual descendant)
     {
-        throw new NotImplementedException();
+        return _mutationMethod.Mutate(descendant);
     }
 
     private IIndividual Crossover((IIndividual, IIndividual) parents)
     {
         var childChromosome = _crossover.Crossover(parents.Item1.Chromosome, parents.Item2.Chromosome);
-        throw new NotImplementedException();
+        return parents.Item1.create(childChromosome);
     }
 
 }
