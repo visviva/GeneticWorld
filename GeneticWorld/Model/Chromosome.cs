@@ -13,5 +13,4 @@ public class Chromosome
     public int Length => _genes.Count;
 
     public IReadOnlyList<double> Genes => _genes;
-    public IList<double> GenesMutable => _genes;
 }
