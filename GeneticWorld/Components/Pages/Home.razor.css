@@ -1,0 +1,8 @@
+﻿#theCanvas {
+    min-width: 500px; /* Minimum width */
+    min-height: 500px; /* Minimum height */
+    width: 50%; /* Scale width to 50% of its container */
+    height: auto; /* Height scales automatically */
+    background-color: lightsteelblue;
+    border: red 3px solid;
+}
