@@ -1,7 +1,68 @@
 ﻿@page "/"
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas.Canvas2D
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Canvas Demo</h1>
 
-Welcome to your new Fluent Blazor app.
+<div>
+This is a Canvas test site.
+</div>
+
+<div>
+<canvas id="myCanvas"></canvas>
+</div>
+
+<br />
+
+<img @ref="_spritesheet" hidden src="icons/icons8-virus-60.png" />
+
+<div id="theCanvas" style="position: fixed;background-color: beige; opacity: 0.8; width: 100%; height: 100%">
+    <BECanvas @ref="_canvasReference"></BECanvas>
+</div>
+
+@code {
+    BECanvasComponent? _canvasReference = null;
+    Canvas2DContext? _outputCanvasContext = null;
+    ElementReference _spritesheet;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("canvasInterop.setupCanvas");
+
+            _outputCanvasContext = await _canvasReference.CreateCanvas2DAsync();
+            await JSRuntime.InvokeAsync<object>("initGame", DotNetObjectReference.Create(this)); 
+        }
+        else
+        {
+        }
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    [JSInvokable]
+    public async ValueTask GameLoop(float timeStamp, int width, int height)
+    {
+        ArgumentNullException.ThrowIfNull(_outputCanvasContext);
+        await _outputCanvasContext.ClearRectAsync(0, 0, width, height);
+        await _outputCanvasContext.SetFillStyleAsync("blue");
+        await _outputCanvasContext.FillRectAsync(0, 0, width, height);
+
+        await _outputCanvasContext.SetFillStyleAsync("green");
+        await _outputCanvasContext.FillRectAsync(10, 50, width, 100);
+
+        await _outputCanvasContext.SetFontAsync("24px verdana");
+        await _outputCanvasContext.StrokeTextAsync($"time: {timeStamp}", 20, 80);
+
+        await _outputCanvasContext.DrawImageAsync(_spritesheet, 0, 0, 60, 60);
+    }
+}
