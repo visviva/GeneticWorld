@@ -41,3 +41,4 @@ window.getElementSize = async (element) => {
     return { width: element.naturalWidth, height: element.naturalHeight };
 };
 
+

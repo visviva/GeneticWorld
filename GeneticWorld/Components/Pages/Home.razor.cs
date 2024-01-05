@@ -19,20 +19,18 @@ public partial class Home
     readonly float _spriteSpeed = 0.25f;
     readonly Time _time = new();
 
-    readonly Random _random = new Random();
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-            await JSRuntime.InvokeVoidAsync("canvasInterop.setupCanvas");
+        /*        if (firstRender)
+                {
+                    await JSRuntime.InvokeVoidAsync("canvasInterop.setupCanvas");
 
-            _context = await _canvasReference.CreateCanvas2DAsync();
+                    _context = await _canvasReference.CreateCanvas2DAsync();
 
-            _sprite.Size = await GetImageSize(_sprite.SpriteSheet);
+                    _sprite.Size = await GetImageSize(_sprite.SpriteSheet);
 
-            await JSRuntime.InvokeAsync<object>("initGame", DotNetObjectReference.Create(this));
-        }
+                    await JSRuntime.InvokeAsync<object>("initGame", DotNetObjectReference.Create(this));
+                }*/
     }
 
     private async Task<Size> GetImageSize(ElementReference imageElement)
