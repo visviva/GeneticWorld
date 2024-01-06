@@ -10,8 +10,8 @@ function onResize() {
     let devicePixelRatio = window.devicePixelRatio || 1; // Get the device pixel ratio
 
     // Calculate the new dimensions based on the aspect ratio and available window size
-    let maxWidth = 0.7 * container.clientWidth * devicePixelRatio;
-    let maxHeight = 0.7 * window.innerHeight * devicePixelRatio;
+    let maxWidth = container.clientWidth * devicePixelRatio;
+    let maxHeight = window.innerHeight * devicePixelRatio;
     let newWidth, newHeight;
 
     if (maxWidth / aspectRatio <= maxHeight) {
@@ -29,9 +29,11 @@ function onResize() {
     simulation.canvas.width = newWidth;
     simulation.canvas.height = newHeight;
 
+    simulation.canvas.style.border = 5 / devicePixelRatio + 'px solid LightSteelBlue';
+    simulation.canvas.style.margin = 10 / devicePixelRatio + 'px';
 
-    let newStyleWidth = newWidth / devicePixelRatio + 'px';
-    let newStyleHeight = newHeight / devicePixelRatio + 'px';
+    let newStyleWidth = 0.7 * newWidth / devicePixelRatio + 'px';
+    let newStyleHeight = 0.7 * newHeight / devicePixelRatio + 'px';
 
     console.log('New canvas style:', newStyleWidth, newStyleHeight);
 
