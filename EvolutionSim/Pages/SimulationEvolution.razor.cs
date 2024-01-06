@@ -1,17 +1,15 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Concurrent;
 using System.Drawing;
-using System.Numerics;
 using Blazor.Extensions;
 using Blazor.Extensions.Canvas;
 using Blazor.Extensions.Canvas.Canvas2D;
 using GeneticWorld.Core;
 using GeometRi;
-using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace GeneticWorld.Components.Pages;
+namespace EvolutionSim.Pages;
 
-public partial class SimulationUI
+public partial class SimulationEvolution
 {
     private BECanvas? _canvasReference;
     private Canvas2DContext? _context;
@@ -19,6 +17,10 @@ public partial class SimulationUI
     private int _canvasHeight => (int)(_canvasReference == null ? 0 : _canvasReference.Height);
 
     private Simulation _simulation = new(new RandomGen());
+
+    readonly private List<Triangle> _animalVisualizations = new();
+
+    readonly private ConcurrentBag<Triangle> _animalsBag = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -41,28 +43,34 @@ public partial class SimulationUI
     public async ValueTask Update(float time)
     {
         _simulation.step();
+        _animalVisualizations.Clear();
+        _animalsBag.Clear();
+
+        var size = _canvasWidth * 0.03;
+
+        Parallel.ForEach(_simulation.World.Animals, (animal) =>
+        {
+            var visualizedAnimal = ConstructTriangleFromIncenter(ScalePointToCanvas(animal.Position), size);
+            visualizedAnimal = visualizedAnimal.Rotate(animal.Rotation, visualizedAnimal.Incenter);
+            _animalsBag.Add(visualizedAnimal);
+        });
     }
 
     private async Task Render()
     {
         await _context!.ClearRectAsync(0, 0, _canvasWidth, _canvasHeight);
 
-
-        var size = _canvasWidth * 0.03;
-        foreach (var animal in _simulation.World.Animals)
+        foreach (var t in _animalsBag)
         {
-            var visualizedAnimal = ConstructTriangleFromIncenter(ScalePointToCanvas(animal.Position), size);
-            visualizedAnimal = visualizedAnimal.Rotate(animal.Rotation, visualizedAnimal.Incenter);
-            await DrawTriangle(visualizedAnimal);
+            await DrawTriangle(t);
         }
     }
 
     [JSInvokable]
     public async ValueTask Loop(float time)
     {
-        await Update(time);
+        Update(time);
         await Render();
-        await Task.Delay(500);
     }
 
     private Point3d ScalePointToCanvas(Point3d p) => new(p.X * _canvasWidth, p.Y * _canvasHeight, 0);
@@ -101,5 +109,4 @@ public partial class SimulationUI
         await _context!.SetStrokeStyleAsync("#ffffff");
         await _context!.ClosePathAsync();
     }
-
 }

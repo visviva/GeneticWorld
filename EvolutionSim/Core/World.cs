@@ -1,4 +1,5 @@
-﻿using GeneticWorld.Model;
+﻿using System.Collections.Concurrent;
+using GeneticWorld.Model;
 
 namespace GeneticWorld.Core;
 

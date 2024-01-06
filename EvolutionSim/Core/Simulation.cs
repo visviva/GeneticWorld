@@ -9,10 +9,7 @@ public class Simulation(IRandomGenerator rng)
 
     public void step()
     {
-        foreach (var animal in World.Animals)
-        {
-            MoveAnimal(animal);
-        }
+        Parallel.ForEach(World.Animals, (animal) => { MoveAnimal(animal); });
     }
 
     private static void MoveAnimal(Animal animal)
