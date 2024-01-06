@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Drawing;
+using System.Text.Json;
 using Blazor.Extensions;
 using Blazor.Extensions.Canvas;
 using Blazor.Extensions.Canvas.Canvas2D;
@@ -22,6 +23,10 @@ public partial class SimulationEvolution
 
     readonly private ConcurrentBag<Triangle> _animalsBag = new();
 
+
+    record struct RenderPoint(int x, int y);
+    record struct RenderTriangle(RenderPoint a, RenderPoint b, RenderPoint c);
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -40,7 +45,7 @@ public partial class SimulationEvolution
         StateHasChanged();
     }
 
-    public async ValueTask Update(float time)
+    public async ValueTask<string> Update(float time)
     {
         _simulation.step();
         _animalVisualizations.Clear();
@@ -54,23 +59,21 @@ public partial class SimulationEvolution
             visualizedAnimal = visualizedAnimal.Rotate(animal.Rotation, visualizedAnimal.Incenter);
             _animalsBag.Add(visualizedAnimal);
         });
-    }
 
-    private async Task Render()
-    {
-        await _context!.ClearRectAsync(0, 0, _canvasWidth, _canvasHeight);
-
+        var newWorld = new List<RenderTriangle>(_simulation.World.Animals.Count);
         foreach (var t in _animalsBag)
         {
-            await DrawTriangle(t);
+            newWorld.Add(new RenderTriangle(new RenderPoint((int)t.A.X, (int)t.A.Y), new RenderPoint((int)t.B.X, (int)t.B.Y), new RenderPoint((int)t.C.X, (int)t.C.Y)));
         }
+
+        var serializedWorld = JsonSerializer.Serialize(newWorld);
+        return serializedWorld;
     }
 
     [JSInvokable]
-    public async ValueTask Loop(float time)
+    public async ValueTask<string> Loop(float time)
     {
-        Update(time);
-        await Render();
+        return await Update(time);
     }
 
     private Point3d ScalePointToCanvas(Point3d p) => new(p.X * _canvasWidth, p.Y * _canvasHeight, 0);
@@ -91,22 +94,5 @@ public partial class SimulationEvolution
         var vertexC = new Point3d(incenter.X + baseLength / 2.0f, incenter.Y + (scale - height), 0);
 
         return new Triangle(vertexA, vertexB, vertexC);
-    }
-
-    private async Task DrawTriangle(Triangle triangle)
-    {
-        await _context!.BeginPathAsync();
-        await _context!.MoveToAsync((int)triangle.A.X, (int)triangle.A.Y);
-        await _context!.SetStrokeStyleAsync("#ff0000");
-        await _context!.SetFillStyleAsync(ColorTranslator.ToHtml(System.Drawing.Color.FromArgb(0, 0, 0)));
-        await _context!.SetLineWidthAsync(3);
-        await _context!.LineToAsync((int)triangle.B.X, (int)triangle.B.Y);
-        await _context!.LineToAsync((int)triangle.C.X, (int)triangle.C.Y);
-        await _context!.LineToAsync((int)triangle.A.X, (int)triangle.A.Y);
-        await _context!.StrokeAsync();
-        await _context!.FillAsync();
-        await _context!.SetFillStyleAsync("#ffffff");
-        await _context!.SetStrokeStyleAsync("#ffffff");
-        await _context!.ClosePathAsync();
     }
 }

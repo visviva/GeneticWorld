@@ -42,9 +42,45 @@ function onResize() {
     simulation.instance.invokeMethodAsync('ResizeCanvas', simulation.canvas.width, simulation.canvas.height);
 }
 
+function clearCanvas(canvas) {
+    const ctx = canvas.getContext('2d');
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function drawTrianglesOnCanvas(triangleData, ctx) {
+    // Loop over each triangle in the data
+    for (const triangle of triangleData) {
+        const { a, b, c } = triangle;
+
+        // Draw the triangle
+        ctx.beginPath();
+
+        ctx.strokeStyle = '#ff0000';
+        ctx.fillStyle = '#000000';
+        ctx.lineWidth = 3;
+
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.lineTo(c.x, c.y);
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.fill();
+    }
+}
 function redraw(time) {
     window.requestAnimationFrame(redraw);
-    simulation.instance.invokeMethodAsync('Loop', time);
+    const newWorld = simulation.instance.invokeMethodAsync('Loop', time);
+    newWorld.then((worldJsonString) => {
+        try {
+            const world = JSON.parse(worldJsonString);
+            clearCanvas(window.simulation.canvas);
+            drawTrianglesOnCanvas(world, window.simulation.canvas.getContext('2d'));
+        } catch (e) {
+            console.error('Error parsing JSON:', e);
+        }
+    });
 }
 
 window.initSimulation = (instance) => {
@@ -57,5 +93,5 @@ window.initSimulation = (instance) => {
 
     window.addEventListener("resize", onResize);
     onResize();
-    window.requestAnimationFrame(redraw);
+    redraw();
 };
