@@ -1,5 +1,4 @@
-﻿
-namespace GeneticModelTest;
+﻿namespace GeneticModelTest;
 
 [TestClass]
 public partial class ChromosomeTest

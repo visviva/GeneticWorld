@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GeneticWorld\GeneticWorld.csproj" />
+    <ProjectReference Include="..\EvolutionSim\EvolutionSim.csproj" />
   </ItemGroup>
 
 </Project>
