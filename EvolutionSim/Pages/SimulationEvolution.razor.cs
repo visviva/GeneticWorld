@@ -21,9 +21,6 @@ public partial class SimulationEvolution
 
     readonly private List<Triangle> _animalVisualizations = new();
 
-    readonly private ConcurrentBag<Triangle> _animalsBag = new();
-
-
     record struct RenderPoint(int x, int y);
     record struct RenderTriangle(RenderPoint a, RenderPoint b, RenderPoint c);
 
@@ -49,19 +46,18 @@ public partial class SimulationEvolution
     {
         _simulation.step();
         _animalVisualizations.Clear();
-        _animalsBag.Clear();
 
         var size = _canvasWidth * 0.03;
 
-        Parallel.ForEach(_simulation.World.Animals, (animal) =>
+        foreach (var animal in _simulation.World.Animals)
         {
             var visualizedAnimal = ConstructTriangleFromIncenter(ScalePointToCanvas(animal.Position), size);
             visualizedAnimal = visualizedAnimal.Rotate(animal.Rotation, visualizedAnimal.Incenter);
-            _animalsBag.Add(visualizedAnimal);
-        });
+            _animalVisualizations.Add(visualizedAnimal);
+        }
 
         var newWorld = new List<RenderTriangle>(_simulation.World.Animals.Count);
-        foreach (var t in _animalsBag)
+        foreach (var t in _animalVisualizations)
         {
             newWorld.Add(new RenderTriangle(new RenderPoint((int)t.A.X, (int)t.A.Y), new RenderPoint((int)t.B.X, (int)t.B.Y), new RenderPoint((int)t.C.X, (int)t.C.Y)));
         }
