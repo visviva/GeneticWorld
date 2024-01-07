@@ -9,6 +9,8 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.razor.js
+*.razor.js.map
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -361,3 +363,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/EvolutionSim/Pages/SimulationEvolution.razor.js
+/EvolutionSim/Pages/SimulationEvolution.razor.js

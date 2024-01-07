@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": false,
+        "noEmitOnError": true,
+        "removeComments": false,
+        "sourceMap": true,
+        "target": "ES2016",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true,
+    },
+    "exclude": [
+        "node_modules",
+        "wwwroot"
+    ]
+}
