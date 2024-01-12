@@ -21,8 +21,13 @@ public partial class SimulationEvolution
 
     readonly private List<Triangle> _animalVisualizations = new();
 
-    record struct RenderPoint(int x, int y);
+    record struct RenderPoint(int x, int y)
+    {
+        public RenderPoint(Point3d point) : this((int)point.X, (int)point.Y) { }
+    }
+
     record struct RenderTriangle(RenderPoint a, RenderPoint b, RenderPoint c);
+    record struct RenderInformation(List<RenderTriangle> triangles, List<RenderPoint> circles);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -56,11 +61,19 @@ public partial class SimulationEvolution
             _animalVisualizations.Add(visualizedAnimal);
         }
 
-        var newWorld = new List<RenderTriangle>(_simulation.World.Animals.Count);
+        var renderAnimalTriangles = new List<RenderTriangle>(_simulation.World.Animals.Count);
         foreach (var t in _animalVisualizations)
         {
-            newWorld.Add(new RenderTriangle(new RenderPoint((int)t.A.X, (int)t.A.Y), new RenderPoint((int)t.B.X, (int)t.B.Y), new RenderPoint((int)t.C.X, (int)t.C.Y)));
+            renderAnimalTriangles.Add(new RenderTriangle(new(t.A), new(t.B), new(t.C)));
         }
+
+        var renderFoodPoints = new List<RenderPoint>();
+        foreach (var f in _simulation.World.Foods)
+        {
+            renderFoodPoints.Add(new(ScalePointToCanvas(f.Position)));
+        }
+
+        var newWorld = new RenderInformation(renderAnimalTriangles, renderFoodPoints);
 
         var serializedWorld = JsonSerializer.Serialize(newWorld);
         return serializedWorld;

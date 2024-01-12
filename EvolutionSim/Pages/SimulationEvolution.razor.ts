@@ -65,7 +65,12 @@ interface Triangle {
     c: Point;
 }
 
-function drawTrianglesOnCanvas(triangleData: Triangle[], ctx: CanvasRenderingContext2D): void {
+interface RenderInformation {
+    triangles: Triangle[];
+    circles: Point[];
+}
+
+function drawTriangles(triangleData: Triangle[], ctx: CanvasRenderingContext2D): void {
     for (const triangle of triangleData) {
         const { a, b, c } = triangle;
 
@@ -83,14 +88,25 @@ function drawTrianglesOnCanvas(triangleData: Triangle[], ctx: CanvasRenderingCon
     }
 }
 
+function drawCircles(circleData: Point[], radius: number, ctx: CanvasRenderingContext2D): void {
+    for (const point of circleData) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, radius, 0, 2.0 * Math.PI);
+        ctx.fillStyle = 'rgb(0,0,0)';
+        ctx.fill();
+        ctx.closePath();
+    }
+}
+
 function redraw(time: number): void {
     window.requestAnimationFrame(redraw);
     const newWorld: Promise<string> = window.simulation.instance.invokeMethodAsync('Loop', time);
     newWorld.then((worldJsonString: string) => {
         try {
-            const world: Triangle[] = JSON.parse(worldJsonString);
+            const world: RenderInformation = JSON.parse(worldJsonString);
             clearCanvas(window.simulation.canvas);
-            drawTrianglesOnCanvas(world, window.simulation.canvas.getContext('2d')!);
+            drawTriangles(world.triangles, window.simulation.canvas.getContext('2d')!);
+            drawCircles(world.circles, 10, window.simulation.canvas.getContext('2d')!);
         } catch (e) {
             console.error('Error parsing JSON:', e);
         }
@@ -98,8 +114,8 @@ function redraw(time: number): void {
 }
 
 window.initSimulation = (instance: any): void => {
-    let canvasContainer: HTMLElement | null = document.getElementById('simulationCanvas')!;
-    let canvases: HTMLCollectionOf<HTMLCanvasElement> = canvasContainer.getElementsByTagName('canvas') as HTMLCollectionOf<HTMLCanvasElement>;
+    let canvasContainer: HTMLElement | null = document.getElementById('simulationCanvas');
+    let canvases: HTMLCollectionOf<HTMLCanvasElement> = canvasContainer!.getElementsByTagName('canvas');
     window.simulation = {
         instance: instance,
         canvas: canvases.length ? canvases[0] : null
