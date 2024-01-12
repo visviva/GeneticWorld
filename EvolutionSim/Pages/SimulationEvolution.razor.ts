@@ -4,6 +4,12 @@ declare global {
         simulation: any; // Replace 'any' with a more specific type if known
         initSimulation: (instance: any) => void; // Replace 'any' with a more specific type if known
     }
+
+    interface CanvasRenderingContext2D {
+        drawTriangles(triangleData: Triangle[]): void;
+        drawCircles(circleData: Circle[]): void;
+        clear(): void;
+    }
 }
 
 const originalWidth: number = 600; // Replace with your original width
@@ -49,11 +55,6 @@ function onResize(): void {
     window.simulation.instance.invokeMethodAsync('ResizeCanvas', window.simulation.canvas.width, window.simulation.canvas.height);
 }
 
-function clearCanvas(canvas: HTMLCanvasElement): void {
-    const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-
 interface Point {
     x: number;
     y: number;
@@ -75,31 +76,34 @@ interface RenderInformation {
     circles: Circle[];
 }
 
-function drawTriangles(triangleData: Triangle[], ctx: CanvasRenderingContext2D): void {
+CanvasRenderingContext2D.prototype.clear = function clearCanvas(): void {
+    this.clearRect(0, 0, this.canvas.width, this.canvas.height);
+}
+CanvasRenderingContext2D.prototype.drawTriangles = function drawTriangles(triangleData: Triangle[]): void {
     for (const triangle of triangleData) {
         const { a, b, c } = triangle;
 
-        ctx.beginPath();
-        ctx.strokeStyle = '#ff0000';
-        ctx.fillStyle = '#000000';
-        ctx.lineWidth = 3;
+        this.beginPath();
+        this.strokeStyle = '#ff0000';
+        this.fillStyle = '#000000';
+        this.lineWidth = 3;
 
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.lineTo(c.x, c.y);
-        ctx.closePath();
-        ctx.stroke();
-        ctx.fill();
+        this.moveTo(a.x, a.y);
+        this.lineTo(b.x, b.y);
+        this.lineTo(c.x, c.y);
+        this.closePath();
+        this.stroke();
+        this.fill();
     }
-}
+};
 
-function drawCircles(circleData: Circle[], ctx: CanvasRenderingContext2D): void {
+CanvasRenderingContext2D.prototype.drawCircles = function drawCircles(circleData: Circle[]): void {
     for (const circle of circleData) {
-        ctx.beginPath();
-        ctx.arc(circle.m.x, circle.m.y, circle.radius, 0, 2.0 * Math.PI);
-        ctx.fillStyle = 'rgb(0,0,0)';
-        ctx.fill();
-        ctx.closePath();
+        this.beginPath();
+        this.arc(circle.m.x, circle.m.y, circle.radius, 0, 2.0 * Math.PI);
+        this.fillStyle = 'rgb(0,0,0)';
+        this.fill();
+        this.closePath();
     }
 }
 
@@ -109,9 +113,10 @@ function redraw(time: number): void {
     newWorld.then((worldJsonString: string) => {
         try {
             const world: RenderInformation = JSON.parse(worldJsonString);
-            clearCanvas(window.simulation.canvas);
-            drawTriangles(world.triangles, window.simulation.canvas.getContext('2d')!);
-            drawCircles(world.circles, window.simulation.canvas.getContext('2d')!);
+            let canvasContext = window.simulation.canvas.getContext('2d');
+            canvasContext.clear();
+            canvasContext.drawTriangles(world.triangles);
+            canvasContext.drawCircles(world.circles);
         } catch (e) {
             console.error('Error parsing JSON:', e);
         }
@@ -119,11 +124,16 @@ function redraw(time: number): void {
 }
 
 window.initSimulation = (instance: any): void => {
-    let canvasContainer: HTMLElement | null = document.getElementById('simulationCanvas');
-    let canvases: HTMLCollectionOf<HTMLCanvasElement> = canvasContainer!.getElementsByTagName('canvas');
+    let theCanvas = document.getElementById('theCanvas');
+
+    if (theCanvas === null) {
+        console.log("The canvas has a problem and is null!");
+        return;
+    }
+
     window.simulation = {
         instance: instance,
-        canvas: canvases.length ? canvases[0] : null
+        canvas: theCanvas
     };
 
     window.addEventListener("resize", onResize);

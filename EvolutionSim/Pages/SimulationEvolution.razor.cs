@@ -2,9 +2,6 @@
 using System.Drawing;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
-using Blazor.Extensions;
-using Blazor.Extensions.Canvas;
-using Blazor.Extensions.Canvas.Canvas2D;
 using EvolutionSim.Core;
 using GeneticWorld.Core;
 using GeometRi;
@@ -14,7 +11,6 @@ namespace EvolutionSim.Pages;
 
 public partial class SimulationEvolution
 {
-    private BECanvas? _canvasReference;
     private int _canvasWidth { get; set; } = 0;
     private int _canvasHeight { get; set; } = 0;
 
