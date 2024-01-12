@@ -59,6 +59,11 @@ interface Point {
     y: number;
 }
 
+interface Circle {
+    m: Point;
+    radius: number;
+}
+
 interface Triangle {
     a: Point;
     b: Point;
@@ -67,7 +72,7 @@ interface Triangle {
 
 interface RenderInformation {
     triangles: Triangle[];
-    circles: Point[];
+    circles: Circle[];
 }
 
 function drawTriangles(triangleData: Triangle[], ctx: CanvasRenderingContext2D): void {
@@ -88,10 +93,10 @@ function drawTriangles(triangleData: Triangle[], ctx: CanvasRenderingContext2D):
     }
 }
 
-function drawCircles(circleData: Point[], radius: number, ctx: CanvasRenderingContext2D): void {
-    for (const point of circleData) {
+function drawCircles(circleData: Circle[], ctx: CanvasRenderingContext2D): void {
+    for (const circle of circleData) {
         ctx.beginPath();
-        ctx.arc(point.x, point.y, radius, 0, 2.0 * Math.PI);
+        ctx.arc(circle.m.x, circle.m.y, circle.radius, 0, 2.0 * Math.PI);
         ctx.fillStyle = 'rgb(0,0,0)';
         ctx.fill();
         ctx.closePath();
@@ -100,13 +105,13 @@ function drawCircles(circleData: Point[], radius: number, ctx: CanvasRenderingCo
 
 function redraw(time: number): void {
     window.requestAnimationFrame(redraw);
-    const newWorld: Promise<string> = window.simulation.instance.invokeMethodAsync('Loop', time);
+    const newWorld: Promise<string> = window.simulation.instance.invokeMethodAsync('Update', time);
     newWorld.then((worldJsonString: string) => {
         try {
             const world: RenderInformation = JSON.parse(worldJsonString);
             clearCanvas(window.simulation.canvas);
             drawTriangles(world.triangles, window.simulation.canvas.getContext('2d')!);
-            drawCircles(world.circles, 10, window.simulation.canvas.getContext('2d')!);
+            drawCircles(world.circles, window.simulation.canvas.getContext('2d')!);
         } catch (e) {
             console.error('Error parsing JSON:', e);
         }
