@@ -9,9 +9,31 @@ public class Simulation(IRandomGenerator rng)
 
     public void step()
     {
+        ProcessCollisions();
+        ProcessMovements();
+    }
+
+    private void ProcessMovements()
+    {
         foreach (var animal in World.Animals)
         {
             MoveAnimal(animal);
+        }
+    }
+
+    private void ProcessCollisions()
+    {
+        foreach (var animal in World.Animals)
+        {
+            foreach (var food in World.Foods)
+            {
+                var distance = animal.Position.DistanceTo(food.Position);
+
+                if (distance <= 0.02)
+                {
+                    food.RandomFoodPosition();
+                }
+            }
         }
     }
 
