@@ -77,15 +77,16 @@ interface RenderInformation {
 }
 
 CanvasRenderingContext2D.prototype.clear = function clearCanvas(): void {
-    this.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.fillStyle = 'rgb(250, 250, 255)';
+    this.fillRect(0, 0, this.canvas.width, this.canvas.height);
 }
 CanvasRenderingContext2D.prototype.drawTriangles = function drawTriangles(triangleData: Triangle[]): void {
     for (const triangle of triangleData) {
         const { a, b, c } = triangle;
 
         this.beginPath();
-        this.strokeStyle = '#ff0000';
-        this.fillStyle = '#000000';
+        this.strokeStyle = 'rgb(59, 31, 43)';
+        this.fillStyle = 'rgb(70, 99, 101)';
         this.lineWidth = 3;
 
         this.moveTo(a.x, a.y);
@@ -94,6 +95,7 @@ CanvasRenderingContext2D.prototype.drawTriangles = function drawTriangles(triang
         this.closePath();
         this.stroke();
         this.fill();
+        this.closePath();
     }
 };
 
@@ -101,7 +103,7 @@ CanvasRenderingContext2D.prototype.drawCircles = function drawCircles(circleData
     for (const circle of circleData) {
         this.beginPath();
         this.arc(circle.m.x, circle.m.y, circle.radius, 0, 2.0 * Math.PI);
-        this.fillStyle = 'rgb(0,0,0)';
+        this.fillStyle = 'rgb(148, 157, 106)';
         this.fill();
         this.closePath();
     }
@@ -115,8 +117,8 @@ function redraw(time: number): void {
             const world: RenderInformation = JSON.parse(worldJsonString);
             let canvasContext = window.simulation.canvas.getContext('2d');
             canvasContext.clear();
-            canvasContext.drawTriangles(world.triangles);
             canvasContext.drawCircles(world.circles);
+            canvasContext.drawTriangles(world.triangles);
         } catch (e) {
             console.error('Error parsing JSON:', e);
         }
