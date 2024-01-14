@@ -64,7 +64,7 @@ public partial class SimulationEvolution
         double baseLength = scale / 1.2;
 
         // Calculate the height using Pythagorean theorem (assuming equal sides are 'scale' length)
-        double height = (float)Math.Sqrt(scale * scale - (baseLength / 2.0f) * (baseLength / 2.0f));
+        double height = Math.Sqrt(scale * scale - (baseLength / 2.0f) * (baseLength / 2.0f));
 
         // Vertex A (top vertex, along the line of symmetry)
         var vertexA = new Point3d(incenter.X, incenter.Y - height, 0);
