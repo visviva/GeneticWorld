@@ -11,6 +11,7 @@ public class Animal
     public double Speed { get; set; } = 0.005;
     public Eye Eye { get; set; }
     public Network Brain { get; set; }
+    public int Satiation { get; set; } = 0;
 
     public List<double> ProcessVision(IReadOnlyList<Food> foods) => Eye.ProcessVision(Position, Rotation, foods);
 

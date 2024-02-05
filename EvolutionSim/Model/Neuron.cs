@@ -4,10 +4,10 @@
 
 namespace GeneticWorld.Model;
 
-internal class Neuron
+public class Neuron
 {
-    public double Bias;
-    public List<double> Weights;
+    public double Bias { get; set; }
+    public List<double> Weights { get; set; }
 
     public Neuron(IRandomGenerator randGen, int inputSize)
     {
@@ -18,6 +18,12 @@ internal class Neuron
         {
             Weights.Add(randGen.GetRandomNumberInRange(-1.0, 1.0));
         }
+    }
+
+    public Neuron(double bias, List<double> weights)
+    {
+        Bias = bias;
+        Weights = weights;
     }
 
     internal double Propagate(List<double> inputs)

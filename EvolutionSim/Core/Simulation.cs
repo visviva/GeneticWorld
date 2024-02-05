@@ -3,20 +3,49 @@ using GeometRi;
 
 namespace GeneticWorld.Core;
 
-public class Simulation(IRandomGenerator rng)
+public partial class Simulation
 {
-    double SpeedMin { get; set; } = 0.001;
-    double SpeedMax { get; set; } = 0.005;
-    double SpeedAccel { get; set; } = 0.2;
-    double RotationAccel { get; set; } = Math.PI / 2.0;
 
-    public World World { get; } = new(rng);
+    public double SpeedMin { get; set; } = 0.001;
+    public double SpeedMax { get; set; } = 0.005;
+    public double SpeedAccel { get; set; } = 0.2;
+    public double RotationAccel { get; set; } = Math.PI / 2.0;
+    public int GenerationLength { get; set; } = 2500;
+
+    public GeneticAlgorithm GeneticAlgorithm { get; set; }
+    int Age = 0;
+
+    public World World { get; }
+    public IRandomGenerator Rng { get; }
+
+    public Simulation(IRandomGenerator rng)
+    {
+        World = new(rng);
+        GeneticAlgorithm = new(rng, new RouletteWheelSelection(), new UniformCrossover(rng), new GaussianMutation(rng, 0.01, 0.3));
+        Rng = rng;
+    }
 
     public void step()
     {
         ProcessCollisions();
         ProcessBrain();
         ProcessMovements();
+
+        Age++;
+
+        if (Age > GenerationLength)
+        {
+            Evolve();
+        }
+    }
+
+    private void Evolve()
+    {
+        var currentPopulation = World.Animals.Select(animal => AnimalIndividual.FromAnimal(animal)).ToList();
+        var evolvedPopulation = GeneticAlgorithm.Evolve(currentPopulation);
+        World.Animals = evolvedPopulation.Select(individual => individual.IntoAnimal(Rng)).ToList();
+        World.RandomFood();
+        Age = 0;
     }
 
     private void ProcessBrain()
@@ -52,6 +81,7 @@ public class Simulation(IRandomGenerator rng)
 
                 if (distance <= 0.02)
                 {
+                    animal.Satiation++;
                     food.RandomFoodPosition();
                 }
             }
