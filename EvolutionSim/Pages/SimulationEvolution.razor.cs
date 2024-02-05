@@ -39,8 +39,8 @@ public partial class SimulationEvolution
     {
         _simulation.step();
 
-        double size = _canvasWidth * 0.03;
-        int radius = (int)(_canvasWidth * 0.008);
+        double size = _canvasWidth * 0.02;
+        int radius = (int)(_canvasWidth * 0.006);
 
         var triangles = _simulation.World.Animals.Select(animal =>
         {
@@ -70,7 +70,7 @@ public partial class SimulationEvolution
     private Triangle ConstructTriangleFromIncenter(Point3d incenter, double scale)
     {
         // Calculate the base length as a function of the scale
-        double baseLength = scale / 1.2;
+        double baseLength = scale / 1.3;
 
         // Calculate the height using Pythagorean theorem (assuming equal sides are 'scale' length)
         double height = Math.Sqrt(scale * scale - (baseLength / 2.0f) * (baseLength / 2.0f));

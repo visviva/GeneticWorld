@@ -100,7 +100,7 @@ public partial class Simulation
             {
                 var distance = animal.Position.DistanceTo(food.Position);
 
-                if (distance <= 0.02)
+                if (distance <= 0.009)
                 {
                     animal.Satiation++;
                     food.RandomFoodPosition();

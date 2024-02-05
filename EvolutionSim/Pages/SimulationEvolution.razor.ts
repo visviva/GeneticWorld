@@ -12,8 +12,8 @@ declare global {
     }
 }
 
-const originalWidth: number = 600; // Replace with your original width
-const originalHeight: number = 333; // Replace with your original height
+const originalWidth: number = 1600; // Replace with your original width
+const originalHeight: number = 800; // Replace with your original height
 const aspectRatio: number = originalWidth / originalHeight;
 
 function onResize(): void {
