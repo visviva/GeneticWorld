@@ -11,6 +11,7 @@
 *.sln.docstates
 *.razor.js
 *.razor.js.map
+dist/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
