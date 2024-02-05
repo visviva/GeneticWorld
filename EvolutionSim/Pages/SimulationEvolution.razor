@@ -8,7 +8,13 @@
 </div>
 
 <div id="explanation" class="centered-div">
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+This page showcases a C# Blazor WASM implementation of an evolutionary simulation where artificial arrow-like birds learn to survive by finding food in a dynamic environment.
+Through neural networks and genetic algorithms, these digital entities evolve over time, exhibiting increasingly complex behaviors.
+This simulation demonstrates the principles of artificial intelligence and evolution in an interactive format, highlighting the adaptability and learning capabilities of artificial life in a virtual ecosystem.
+It is designed after the awesome tutorial series 
+</div>
+<div class="centered-div" style="margin: auto auto 10px 10px">
+    <a href="https://pwy.io/posts/learning-to-fly-pt1/">Learning to Fly: Let's simulate evolution in Rust! </a>.
 </div>
 
 <div id="simulationCanvas">
@@ -34,7 +40,7 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
                 <h5 class="card-title">Train Animals</h5>
                 <p class="card-text">Training is used to fast-forward a whole generation.</p>
                 <div class="warning-box">
-                    <b>Warning:</b> The training of a whole generation might take some time and block the browser window!
+                    <b>Warning:</b> The training of a whole generation might take some time!
                 </div>
                 <button type="button" class="btn btn-primary" @onclick="Train">Train</button>
             </div>
@@ -45,7 +51,7 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
             <div class="card-body">
                 <h5 class="card-title">Restart</h5>
                 <p class="card-text">Deletes all animals and restarts the simulation.</p>
-                <button type="button" class="btn btn-primary" @onclick="Train">Restart</button>
+                <button type="button" class="btn btn-primary" @onclick="Restart">Restart</button>
             </div>
         </div>
     </div>

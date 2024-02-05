@@ -62,7 +62,24 @@ public partial class SimulationEvolution
 
     public async Task Train()
     {
-        _simulation.Train();
+        await JSRuntime.InvokeAsync<object>("pauseSimulation");
+        while (true)
+        {
+            var result = await Task.Run(() => _simulation.step());
+            StateHasChanged();
+            if (result == Simulation.SimulationResult.NewGeneration)
+            {
+                break;
+            }
+            await Task.Delay(1);
+        }
+        await JSRuntime.InvokeAsync<object>("resumeSimulation");
+    }
+
+    public async Task Restart()
+    {
+        _simulation = new(new RandomGen());
+        StateHasChanged();
     }
 
     private Point3d ScalePointToCanvas(Point3d p) => new(p.X * _canvasWidth, p.Y * _canvasHeight, 0);

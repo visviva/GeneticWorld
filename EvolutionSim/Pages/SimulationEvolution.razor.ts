@@ -3,6 +3,9 @@ declare global {
     interface Window {
         simulation: any; // Replace 'any' with a more specific type if known
         initSimulation: (instance: any) => void; // Replace 'any' with a more specific type if known
+        animationFrame: number;
+        pauseSimulation: () => void;
+        resumeSimulation: () => void;
     }
 
     interface CanvasRenderingContext2D {
@@ -110,7 +113,7 @@ CanvasRenderingContext2D.prototype.drawCircles = function drawCircles(circleData
 }
 
 function redraw(time: number): void {
-    window.requestAnimationFrame(redraw);
+    window.resumeSimulation();
     const newWorld: Promise<string> = window.simulation.instance.invokeMethodAsync('Update', time);
     newWorld.then((worldJsonString: string) => {
         try {
@@ -141,6 +144,14 @@ window.initSimulation = (instance: any): void => {
     window.addEventListener("resize", onResize);
     onResize();
     redraw(0.0);
+};
+
+window.pauseSimulation = (): void => {
+    window.cancelAnimationFrame(window.animationFrame);
+};
+
+window.resumeSimulation = (): void => {
+    window.animationFrame = window.requestAnimationFrame(redraw);
 };
 
 export { };
