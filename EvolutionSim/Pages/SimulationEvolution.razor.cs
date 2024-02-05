@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Drawing;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
@@ -13,6 +14,7 @@ public partial class SimulationEvolution
 {
     private int _canvasWidth { get; set; } = 0;
     private int _canvasHeight { get; set; } = 0;
+    private int _progress => (int)(_simulation.Percentage * 100.0);
 
     private Simulation _simulation = new(new RandomGen());
 
@@ -52,8 +54,15 @@ public partial class SimulationEvolution
 
         var newWorld = new RenderInformation(triangles, circles);
 
+        StateHasChanged();
+
         var serializedWorld = JsonSerializer.Serialize(newWorld);
         return serializedWorld;
+    }
+
+    public async Task Train()
+    {
+        _simulation.Train();
     }
 
     private Point3d ScalePointToCanvas(Point3d p) => new(p.X * _canvasWidth, p.Y * _canvasHeight, 0);

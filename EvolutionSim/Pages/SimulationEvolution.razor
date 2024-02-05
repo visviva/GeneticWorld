@@ -10,5 +10,8 @@
     <div id="simulationCanvas">
        <canvas id="theCanvas"></canvas>
     </div>
-    <div>Text below canvas</div>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: @_progress%" aria-valuenow="@_progress" aria-valuemin="0" aria-valuemax="100">Development of current generation</div>
+    </div>
+    <button @onclick="Train">Train</button>
 </div>

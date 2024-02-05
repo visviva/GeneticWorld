@@ -10,7 +10,7 @@ public partial class Simulation
     public double SpeedMax { get; set; } = 0.005;
     public double SpeedAccel { get; set; } = 0.2;
     public double RotationAccel { get; set; } = Math.PI / 2.0;
-    public int GenerationLength { get; set; } = 2500;
+    public int GenerationLength { get; set; } = 1000;
 
     public GeneticAlgorithm GeneticAlgorithm { get; set; }
     int Age = 0;
@@ -25,7 +25,13 @@ public partial class Simulation
         Rng = rng;
     }
 
-    public void step()
+    public enum SimulationResult
+    {
+        NewGeneration,
+        CurrentGeneration
+    }
+
+    public SimulationResult step()
     {
         ProcessCollisions();
         ProcessBrain();
@@ -36,8 +42,23 @@ public partial class Simulation
         if (Age > GenerationLength)
         {
             Evolve();
+            return SimulationResult.NewGeneration;
+        }
+
+        return SimulationResult.CurrentGeneration;
+    }
+
+    public void Train()
+    {
+        SimulationResult result = step();
+
+        while (result != SimulationResult.NewGeneration)
+        {
+            result = step();
         }
     }
+
+    public double Percentage => Age / (double)GenerationLength;
 
     private void Evolve()
     {
