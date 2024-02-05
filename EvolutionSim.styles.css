@@ -1,0 +1,124 @@
+/* /Layout/MainLayout.razor.rz.scp.css */
+.page[b-ot9lxce2dn] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+main[b-ot9lxce2dn] {
+    flex: 1;
+}
+
+.sidebar[b-ot9lxce2dn] {
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+}
+
+.top-row[b-ot9lxce2dn] {
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #d6d5d5;
+    justify-content: flex-end;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+}
+
+    .top-row[b-ot9lxce2dn]  a, .top-row[b-ot9lxce2dn]  .btn-link {
+        white-space: nowrap;
+        margin-left: 1.5rem;
+        text-decoration: none;
+    }
+
+    .top-row[b-ot9lxce2dn]  a:hover, .top-row[b-ot9lxce2dn]  .btn-link:hover {
+        text-decoration: underline;
+    }
+
+    .top-row[b-ot9lxce2dn]  a:first-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+@media (max-width: 640.98px) {
+    .top-row[b-ot9lxce2dn] {
+        justify-content: space-between;
+    }
+
+    .top-row[b-ot9lxce2dn]  a, .top-row[b-ot9lxce2dn]  .btn-link {
+        margin-left: 0;
+    }
+}
+
+@media (min-width: 641px) {
+    .page[b-ot9lxce2dn] {
+        flex-direction: row;
+    }
+
+    .sidebar[b-ot9lxce2dn] {
+        width: 250px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+
+    .top-row[b-ot9lxce2dn] {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .top-row.auth[b-ot9lxce2dn]  a:first-child {
+        flex: 1;
+        text-align: right;
+        width: 0;
+    }
+
+    .top-row[b-ot9lxce2dn], article[b-ot9lxce2dn] {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+/* /Pages/SimulationEvolution.razor.rz.scp.css */
+#simulationCanvas[b-7edgagrqua] {
+    width: 100%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.centered-div[b-7edgagrqua] {
+    width: 100%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+
+#explanation[b-7edgagrqua] {
+    width: 50%;
+    margin: 20px auto;
+}
+
+.container[b-7edgagrqua] {
+    width: 100%;
+    margin: auto;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.progress-container[b-7edgagrqua] {
+    flex-grow: 1;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+.label[b-7edgagrqua] {
+    white-space: nowrap; /* Prevents the labels from wrapping */
+}
+
+.warning-box[b-7edgagrqua] {
+    padding: 10px;
+    background-color: #ffcc00; /* Light yellow background */
+    color: #333; /* Dark text color for contrast */
+    border-left: 6px solid #ff9900; /* Darker yellow border on the left */
+    margin: 10px 0; /* Adds some space around the box */
+}
