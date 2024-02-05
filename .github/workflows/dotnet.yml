@@ -21,7 +21,9 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Setup Node.js environment
-      uses: actions/setup-node@v4.0.1          
+      uses: actions/setup-node@v4.0.1
+    - name: Setup Rsync
+      uses: GuillaumeFalourd/setup-rsync@v1.2
     - name: Restore dependencies
       run: dotnet restore
     - name: Install .NET WASM Build Tools
@@ -38,5 +40,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages
         FOLDER: dist/Web/wwwroot
-
         
