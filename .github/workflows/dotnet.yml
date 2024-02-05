@@ -29,7 +29,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish .NET Core Project
-      run: dotnet publish Web/Web.csproj -c:Release -p:GHPages=true -o dist/Web --nologo
+      run: dotnet publish EvolutionSim/EvolutionSim.csproj -c:Release -p:GHPages=true -o dist/Web --nologo
     - name: Commit wwwroot to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@3.7.1
       with:
