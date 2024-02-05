@@ -5,13 +5,15 @@
 
 <h3>Simulation</h3>
 
-<div class="stack-vertical">
-    <div>Text above canvas</div>
+<div class="stack-vertical d-flex justify-content-center">
     <div id="simulationCanvas">
        <canvas id="theCanvas"></canvas>
     </div>
-    <div class="progress">
-        <div class="progress-bar" role="progressbar" style="width: @_progress%" aria-valuenow="@_progress" aria-valuemin="0" aria-valuemax="100">Development of current generation</div>
-    </div>
-    <button @onclick="Train">Train</button>
+
 </div>
+<div class="progress" style="width:60%; margin:20px">
+    <div class="progress-bar" role="progressbar" style="width: @_progress%" aria-valuenow="@_progress" aria-valuemin="0" aria-valuemax="100">Development of current generation</div>
+</div>
+
+<button type="button" class="btn btn-primary" style="margin:20px" @onclick="Train">Train</button>
+<button type="button" class="btn btn-primary" @onclick="Train">Pause</button>
