@@ -60,7 +60,7 @@ CanvasRenderingContext2D.prototype.drawCircles = function drawCircles(circleData
     }
 };
 function redraw(time) {
-    window.requestAnimationFrame(redraw);
+    window.resumeSimulation();
     const newWorld = window.simulation.instance.invokeMethodAsync('Update', time);
     newWorld.then((worldJsonString) => {
         try {
@@ -88,6 +88,12 @@ window.initSimulation = (instance) => {
     window.addEventListener("resize", onResize);
     onResize();
     redraw(0.0);
+};
+window.pauseSimulation = () => {
+    window.cancelAnimationFrame(window.animationFrame);
+};
+window.resumeSimulation = () => {
+    window.animationFrame = window.requestAnimationFrame(redraw);
 };
 export {};
 //# sourceMappingURL=SimulationEvolution.razor.js.map
