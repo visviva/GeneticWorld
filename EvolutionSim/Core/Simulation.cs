@@ -53,7 +53,7 @@ public partial class Simulation
         foreach (var animal in World.Animals)
         {
             var vision = animal.ProcessVision(World.Foods);
-            var response = animal.Brain.Propagate(vision);
+            var response = animal.Brain.Network.Propagate(vision);
 
             var speed = Math.Clamp(response[0], -SpeedAccel, SpeedAccel);
             var rotation = Math.Clamp(response[1], -RotationAccel, RotationAccel);

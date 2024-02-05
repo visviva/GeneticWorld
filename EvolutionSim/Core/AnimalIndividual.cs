@@ -16,13 +16,10 @@ public class AnimalIndividual : IIndividual
 
     public IIndividual create(Chromosome chromosome) => new AnimalIndividual(0.0, chromosome);
 
-    public static AnimalIndividual FromAnimal(Animal animal)
-    {
-        throw new NotImplementedException();
-    }
+    public static AnimalIndividual FromAnimal(Animal animal) => new AnimalIndividual(animal.Satiation, animal.Chromosome);
 
     public Animal IntoAnimal(IRandomGenerator rng)
     {
-        throw new NotImplementedException();
+        return Animal.FromChromosome(rng, Chromosome);
     }
 }
