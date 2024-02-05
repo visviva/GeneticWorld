@@ -11,9 +11,11 @@ on:
 
 jobs:
   build:
-
+    permissions:
+      id-token: write
+      
     runs-on: windows-latest
-
+    
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
