@@ -36,3 +36,5 @@ jobs:
       uses: actions/upload-pages-artifact@v3.0.0
       with:
         path: dist/Web/wwwroot
+    - name: Deploy GitHub Pages site
+      uses: actions/deploy-pages@v4.0.3
