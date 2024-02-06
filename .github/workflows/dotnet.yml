@@ -41,9 +41,9 @@ jobs:
     - name: Upload GitHub Pages artifact
       uses: actions/upload-pages-artifact@v3.0.0
       with:
-        name: gh-pages-${{GITHUB_SHA}}
+        name: gh-pages-${GITHUB_SHA}
         path: dist/Web/wwwroot
     - name: Deploy GitHub Pages site
       uses: actions/deploy-pages@v4.0.3
       with:
-        artifact_name: gh-pages-${{GITHUB_SHA}}
+        artifact_name: gh-pages-${GITHUB_SHA}
