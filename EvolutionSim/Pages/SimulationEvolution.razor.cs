@@ -6,6 +6,7 @@ using System.Text.Json;
 using EvolutionSim.Core;
 using GeneticWorld.Core;
 using GeometRi;
+using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
 
 namespace EvolutionSim.Pages;
@@ -101,4 +102,19 @@ public partial class SimulationEvolution
 
         return new Triangle(vertexA, vertexB, vertexC);
     }
+
+    string? activeid = "tab-1";
+    FluentTab? changedto;
+
+    private void HandleOnTabChange(FluentTab tab)
+    {
+        changedto = tab;
+    }
+
+    private int exampleInt1 = 0;
+    private int exampleInt2 = 0;
+    private int exampleInt3 = 0;
+    private int exampleInt4 = 0;
+    private int exampleInt5 = 0;
+
 }

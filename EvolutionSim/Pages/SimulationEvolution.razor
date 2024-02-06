@@ -28,31 +28,50 @@ It is designed after the awesome tutorial series
             <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: @_progress%"></div>
         </div>
     </div>
-        <div class="label">@_progress%</div>
+    <div class="label">@_progress%</div>
 </div>
 
-
-
-<div class="row container">
-    <div class="col-sm-6 mb-3 mb-sm-0 flex flex-column">
-        <div class="card flex-grow-1">
-            <div class="card-body">
-                <h5 class="card-title">Train Animals</h5>
-                <p class="card-text">Training is used to fast-forward a whole generation.</p>
-                <div class="warning-box">
-                    <b>Warning:</b> The training of a whole generation might take some time!
-                </div>
-                <button type="button" class="btn btn-primary" @onclick="Train">Train</button>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 d-flex flex-column">
-        <div class="card flex-grow-1">
-            <div class="card-body">
-                <h5 class="card-title">Restart</h5>
-                <p class="card-text">Deletes all animals and restarts the simulation.</p>
-                <button type="button" class="btn btn-primary" @onclick="Restart">Restart</button>
-            </div>
-        </div>
-    </div>
+<div class="container">
+    <FluentTabs Orientation="Orientation.Horizontal" @bind-ActiveTabId="@activeid" OnTabChange="HandleOnTabChange" Style="width: 100%; flex-grow: 1; margin: 0 auto;">
+        <FluentTab Label="General" Id="tab-v1" Style="flex-grow: 1; margin: 0 auto;">
+            <FluentGrid>
+                <FluentGridItem xs="12" sm="6">
+                    <FluentCard>
+                        <h5 class="card-title">Train Animals</h5>
+                        <p class="card-text">Training is used to fast-forward a whole generation.</p>
+                        <div class="warning-box">
+                            <b>Warning:</b> The training of a whole generation might take some time!
+                        </div>
+                        <FluentButton @onclick="Train">Train</FluentButton>
+                    </FluentCard>
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6">
+                    <FluentCard>
+                        <h5 class="card-title">Restart</h5>
+                        <p class="card-text">Deletes all animals and restarts the simulation.</p>
+                        <FluentButton @onclick="Restart">Restart</FluentButton>
+                    </FluentCard>
+                </FluentGridItem>
+            </FluentGrid>
+        </FluentTab>
+        <FluentTab Label="Parameters" Id="tab-v2" Style="flex-grow: 1; margin: 0 auto;">
+            <FluentGrid>
+                <FluentGridItem xs="12" sm="6">
+                    <FluentCard>
+                        <h5 class="card-title">Parameter 1</h5>
+                        <p>Some explanation for this parameter.</p>
+                        <FluentNumberField @bind-Value="exampleInt1" />
+                    </FluentCard>
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6">
+                    <FluentCard>
+                        <h5 class="card-title">Parameter 1</h5>
+                        <p>Some explanation for this parameter.</p>
+                        <FluentNumberField @bind-Value="exampleInt1" />
+                    </FluentCard>
+                </FluentGridItem>
+            </FluentGrid>
+        </FluentTab>
+    </FluentTabs>
 </div>
+
