@@ -22,7 +22,7 @@ public class Eye
     /// - 0.1 = 10% of the map = bird sees no foods (at least in this case)
     /// - 0.5 = 50% of the map = bird sees one of the foods
     /// - 1.0 = 100% of the map = bird sees both foods
-    public double FovRange { get; set; } = 0.25;
+    public double FovRange { get; set; } = Parameters.FovRange;
 
     /// How wide our eye can see.
     ///
@@ -85,7 +85,7 @@ public class Eye
     ///   |      ---      |
     ///   |               |
     ///   ----------------- <summary>
-    public double FovAngle { get; set; } = Math.PI + Math.PI / 4;
+    public double FovAngle { get; set; } = Parameters.FovAngle;
 
     /// How much photoreceptors there are in a single eye.
     ///
@@ -96,7 +96,7 @@ public class Eye
     ///
     /// I've found values between 3~11 sufficient, with eyes having more
     /// than ~20 photoreceptors yielding progressively worse results.
-    public int Cells { get; set; } = 9;
+    public int Cells { get; set; } = Parameters.EyeCells;
 
     public List<double> ProcessVision(Point3d position, Rotation rotation, IReadOnlyList<Food> foods)
     {

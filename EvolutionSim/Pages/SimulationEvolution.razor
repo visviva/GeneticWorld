@@ -58,16 +58,79 @@ It is designed after the awesome tutorial series
             <FluentGrid>
                 <FluentGridItem xs="12" sm="6">
                     <FluentCard>
-                        <h5 class="card-title">Parameter 1</h5>
-                        <p>Some explanation for this parameter.</p>
-                        <FluentNumberField @bind-Value="exampleInt1" />
+                        <h5 class="card-title">Number Of Birds</h5>
+                        <p>The number of birds in the world.</p>
+                        <FluentNumberField @bind-Value="NumberOfBirds" />
                     </FluentCard>
                 </FluentGridItem>
                 <FluentGridItem xs="12" sm="6">
                     <FluentCard>
-                        <h5 class="card-title">Parameter 1</h5>
-                        <p>Some explanation for this parameter.</p>
-                        <FluentNumberField @bind-Value="exampleInt1" />
+                        <h5 class="card-title">Number Of Foods</h5>
+                        <p>The amount of available food for the birds.</p>
+                        <FluentNumberField @bind-Value="NumberOfFoods" />
+                    </FluentCard>
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6">
+                    <FluentCard>
+                        <h5 class="card-title">Minimal Bird Speed</h5>
+                        <p>The minimum speed of a bird.</p>
+                        <FluentNumberField @bind-Value="SpeedMin" />
+                    </FluentCard>
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6">
+                    <FluentCard>
+                        <h5 class="card-title">Maximal Bird Speed</h5>
+                        <p>The maximum speed of a bird.</p>
+                        <FluentNumberField @bind-Value="SpeedMax" />
+                    </FluentCard>
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6">
+                    <FluentCard>
+                        <h5 class="card-title">Bird Speed Acceleration</h5>
+                        <p>The acceleration of the speed of a bird.</p>
+                        <FluentNumberField @bind-Value="SpeedAccel" />
+                    </FluentCard>
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6">
+                    <FluentCard>
+                        <h5 class="card-title">Bird Rotation Acceleration</h5>
+                        <p>Defines how fast a bird can accelerate its rotation into a direction.</p>
+                        <FluentNumberField @bind-Value="RotationAccel" />
+                    </FluentCard>
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6">
+                    <FluentCard>
+                        <h5 class="card-title">Cycles per Generation</h5>
+                        <p>The number of calculations of the world until the next evolution step.</p>
+                        <FluentNumberField @bind-Value="GenerationLength" />
+                    </FluentCard>
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6">
+                    <FluentCard>
+                        <h5 class="card-title">Neurons</h5>
+                        <p>The number of neurons in a birds brain.</p>
+                        <FluentNumberField @bind-Value="Neurons" />
+                    </FluentCard>
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6">
+                    <FluentCard>
+                        <h5 class="card-title">Cells per Eye</h5>
+                        <p>The number of cells in a birds eye. It defines the resolution of how good a bird can see and detect the direction of food.</p>
+                        <FluentNumberField @bind-Value="EyeCells" />
+                    </FluentCard>
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6">
+                    <FluentCard>
+                        <h5 class="card-title">Field of View Range</h5>
+                        <p>The maximum distance a bird can see.</p>
+                        <FluentNumberField @bind-Value="FovRange" />
+                    </FluentCard>
+                </FluentGridItem>
+                <FluentGridItem xs="12" sm="6">
+                    <FluentCard>
+                        <h5 class="card-title">Field of View Angle</h5>
+                        <p>The angle of the field of view.</p>
+                        <FluentNumberField @bind-Value="FovAngle" />
                     </FluentCard>
                 </FluentGridItem>
             </FluentGrid>

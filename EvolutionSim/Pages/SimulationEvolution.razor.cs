@@ -67,6 +67,7 @@ public partial class SimulationEvolution
         while (true)
         {
             var result = await Task.Run(() => _simulation.step());
+
             StateHasChanged();
             if (result == Simulation.SimulationResult.NewGeneration)
             {
@@ -111,10 +112,94 @@ public partial class SimulationEvolution
         changedto = tab;
     }
 
-    private int exampleInt1 = 0;
-    private int exampleInt2 = 0;
-    private int exampleInt3 = 0;
-    private int exampleInt4 = 0;
-    private int exampleInt5 = 0;
+    private int NumberOfBirds
+    {
+        get => Parameters.NumberOfBirds;
+        set
+        {
+            Parameters.NumberOfBirds = value;
+        }
+    }
 
+    private int NumberOfFoods
+    {
+        get => Parameters.NumberOfFoods;
+        set
+        {
+            Parameters.NumberOfFoods = value;
+        }
+    }
+
+    private double SpeedMin
+    {
+        get => Parameters.SpeedMin;
+        set
+        {
+            Parameters.SpeedMin = value;
+        }
+    }
+    private double SpeedMax
+    {
+        get => Parameters.SpeedMax;
+        set
+        {
+            Parameters.SpeedMax = value;
+        }
+    }
+    private double SpeedAccel
+    {
+        get => Parameters.SpeedAccel;
+        set
+        {
+            Parameters.SpeedAccel = value;
+        }
+    }
+    private double RotationAccel
+    {
+        get => Parameters.RotationAccel;
+        set
+        {
+            Parameters.RotationAccel = value;
+        }
+    }
+    private int GenerationLength
+    {
+        get => Parameters.GenerationLength;
+        set
+        {
+            Parameters.GenerationLength = value;
+        }
+    }
+    private int Neurons
+    {
+        get => Parameters.Neurons;
+        set
+        {
+            Parameters.Neurons = value;
+        }
+    }
+    private int EyeCells
+    {
+        get => Parameters.EyeCells;
+        set
+        {
+            Parameters.EyeCells = value;
+        }
+    }
+    private double FovRange
+    {
+        get => Parameters.FovRange;
+        set
+        {
+            Parameters.FovRange = value;
+        }
+    }
+    private double FovAngle
+    {
+        get => Parameters.FovAngle;
+        set
+        {
+            Parameters.FovAngle = value;
+        }
+    }
 }

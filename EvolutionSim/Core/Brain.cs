@@ -21,7 +21,7 @@ public class Brain
     {
         List<LayerTopology> topology = [
             new LayerTopology(eye.Cells),
-            new LayerTopology(2 * eye.Cells),
+            new LayerTopology(Parameters.Neurons),
             new LayerTopology(2)
             ];
 

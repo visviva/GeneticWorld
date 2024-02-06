@@ -1,16 +1,16 @@
-﻿using GeneticWorld.Model;
+﻿using EvolutionSim.Core;
+using GeneticWorld.Model;
 using GeometRi;
 
 namespace GeneticWorld.Core;
 
 public partial class Simulation
 {
-
-    public double SpeedMin { get; set; } = 0.001;
-    public double SpeedMax { get; set; } = 0.005;
-    public double SpeedAccel { get; set; } = 0.2;
-    public double RotationAccel { get; set; } = Math.PI / 2.0;
-    public int GenerationLength { get; set; } = 1000;
+    public double SpeedMin { get; set; } = Parameters.SpeedMin;
+    public double SpeedMax { get; set; } = Parameters.SpeedMax;
+    public double SpeedAccel { get; set; } = Parameters.SpeedAccel;
+    public double RotationAccel { get; set; } = Parameters.RotationAccel;
+    public int GenerationLength { get; set; } = Parameters.GenerationLength;
 
     public GeneticAlgorithm GeneticAlgorithm { get; set; }
     int Age = 0;

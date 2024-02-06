@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using EvolutionSim.Core;
 using GeneticWorld.Model;
 
 namespace GeneticWorld.Core;
@@ -18,11 +19,11 @@ public class World
 
     public void RandomFood()
     {
-        Foods = Enumerable.Range(0, 40).Select(x => new Food(Rng)).ToList();
+        Foods = Enumerable.Range(0, Parameters.NumberOfFoods).Select(x => new Food(Rng)).ToList();
     }
 
     public void RandomAnimals()
     {
-        Animals = Enumerable.Range(0, 30).Select(x => new Animal(Rng)).ToList();
+        Animals = Enumerable.Range(0, Parameters.NumberOfBirds).Select(x => new Animal(Rng)).ToList();
     }
 }
