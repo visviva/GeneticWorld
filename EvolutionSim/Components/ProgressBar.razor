@@ -1,0 +1,16 @@
+﻿<div class="label">@Label</div>
+    <div class="progress-container">
+        <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: @Progress%"></div>
+        </div>
+    </div>
+<div class="label">@Progress%</div>
+
+
+@code {
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public int Progress { get; set; } = 0;
+}

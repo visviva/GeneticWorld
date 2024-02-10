@@ -1,5 +1,7 @@
 ﻿@page "/"
+@using EvolutionSim.Components
 @inject IJSRuntime JSRuntime
+@using static Simulation.Parameters
 
 <PageTitle>Simulation</PageTitle>
 
@@ -22,119 +24,79 @@ It is designed after the awesome tutorial series
 </div>
 
 <div class="container" style="width: 100%">
-    <div class="label">Development of current generation:</div>
-    <div class="progress-container">
-        <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: @_progress%"></div>
-        </div>
-    </div>
-    <div class="label">@_progress%</div>
+    <ProgressBar Label="Development of current generation:" Progress="_progress" />
 </div>
 
 <div class="container">
-    <FluentTabs Orientation="Orientation.Horizontal" @bind-ActiveTabId="@activeid" OnTabChange="HandleOnTabChange" Style="width: 100%; flex-grow: 1; margin: 0 auto;">
+    <FluentTabs Orientation="Orientation.Horizontal" Style="width: 100%; flex-grow: 1; margin: 0 auto;">
+
         <FluentTab Label="General" Id="tab-v1" Style="flex-grow: 1; margin: 0 auto;">
             <FluentGrid>
+
                 <FluentGridItem xs="12" sm="6">
-                    <FluentCard>
-                        <h5 class="card-title">Train Animals</h5>
-                        <p class="card-text">Training is used to fast-forward a whole generation.</p>
+                    <ButtonCard Title="Train Animals" ButtonLabel="Train" OnClick="Train" Content="Training is used to fast-forward a whole generation.">
                         <div class="warning-box">
                             <b>Warning:</b> The training of a whole generation might take some time!
                         </div>
-                        <FluentButton @onclick="Train">Train</FluentButton>
-                    </FluentCard>
+                    </ButtonCard>       
                 </FluentGridItem>
+
                 <FluentGridItem xs="12" sm="6">
-                    <FluentCard>
-                        <h5 class="card-title">Restart</h5>
-                        <p class="card-text">Deletes all animals and restarts the simulation.</p>
-                        <FluentButton @onclick="Restart">Restart</FluentButton>
-                    </FluentCard>
+                    <ButtonCard Title="Restart" ButtonLabel="Restart" OnClick="Restart" Content="Deletes all animals and restarts the simulation." />
                 </FluentGridItem>
+
             </FluentGrid>
         </FluentTab>
+
         <FluentTab Label="Parameters" Id="tab-v2" Style="flex-grow: 1; margin: 0 auto;">
             <FluentGrid>
+
                 <FluentGridItem xs="12" sm="6">
-                    <FluentCard>
-                        <h5 class="card-title">Number Of Birds</h5>
-                        <p>The number of birds in the world.</p>
-                        <FluentNumberField @bind-Value="NumberOfBirds" />
-                    </FluentCard>
+                    <ParameterCardInt Title="Number of Birds" Content="The number of birds in the world." @bind-Value=Simulation.Parameters.NumberOfBirds />
                 </FluentGridItem>
+
                 <FluentGridItem xs="12" sm="6">
-                    <FluentCard>
-                        <h5 class="card-title">Number Of Foods</h5>
-                        <p>The amount of available food for the birds.</p>
-                        <FluentNumberField @bind-Value="NumberOfFoods" />
-                    </FluentCard>
+                    <ParameterCardInt Title="Number of Foods" Content="The amount of available food for the birds." @bind-Value=Simulation.Parameters.NumberOfFoods />
                 </FluentGridItem>
+
                 <FluentGridItem xs="12" sm="6">
-                    <FluentCard>
-                        <h5 class="card-title">Minimal Bird Speed</h5>
-                        <p>The minimum speed of a bird.</p>
-                        <FluentNumberField @bind-Value="SpeedMin" />
-                    </FluentCard>
+                    <ParameterCardDouble Title="Minimal Bird Speed" Content="The minimum speed of a bird." @bind-Value=Simulation.Parameters.SpeedMin />
                 </FluentGridItem>
+
                 <FluentGridItem xs="12" sm="6">
-                    <FluentCard>
-                        <h5 class="card-title">Maximal Bird Speed</h5>
-                        <p>The maximum speed of a bird.</p>
-                        <FluentNumberField @bind-Value="SpeedMax" />
-                    </FluentCard>
+                    <ParameterCardDouble Title="Maximal Bird Speed" Content="The maximal speed of a bird." @bind-Value=Simulation.Parameters.SpeedMax />
                 </FluentGridItem>
+
                 <FluentGridItem xs="12" sm="6">
-                    <FluentCard>
-                        <h5 class="card-title">Bird Speed Acceleration</h5>
-                        <p>The acceleration of the speed of a bird.</p>
-                        <FluentNumberField @bind-Value="SpeedAccel" />
-                    </FluentCard>
+                    <ParameterCardDouble Title="Bird Speed Acceleration" Content="The acceleration of the speed of a bird." @bind-Value=Simulation.Parameters.SpeedAccel />
                 </FluentGridItem>
+
                 <FluentGridItem xs="12" sm="6">
-                    <FluentCard>
-                        <h5 class="card-title">Bird Rotation Acceleration</h5>
-                        <p>Defines how fast a bird can accelerate its rotation into a direction.</p>
-                        <FluentNumberField @bind-Value="RotationAccel" />
-                    </FluentCard>
+                    <ParameterCardDouble Title="Bird Rotation Acceleration" Content="The acceleration of the rotation of a bird." @bind-Value=Simulation.Parameters.RotationAccel />
                 </FluentGridItem>
+
                 <FluentGridItem xs="12" sm="6">
-                    <FluentCard>
-                        <h5 class="card-title">Cycles per Generation</h5>
-                        <p>The number of calculations of the world until the next evolution step.</p>
-                        <FluentNumberField @bind-Value="GenerationLength" />
-                    </FluentCard>
+                    <ParameterCardInt Title="Cycles per Generation" Content="The number of calculations of the world until the next evolution step." @bind-Value=Simulation.Parameters.GenerationLength />
                 </FluentGridItem>
+
                 <FluentGridItem xs="12" sm="6">
-                    <FluentCard>
-                        <h5 class="card-title">Neurons</h5>
-                        <p>The number of neurons in a birds brain.</p>
-                        <FluentNumberField @bind-Value="Neurons" />
-                    </FluentCard>
+                    <ParameterCardInt Title="Neurons" Content="The number of neurons in a birds brain." @bind-Value=Simulation.Parameters.Neurons />
                 </FluentGridItem>
+
                 <FluentGridItem xs="12" sm="6">
-                    <FluentCard>
-                        <h5 class="card-title">Cells per Eye</h5>
-                        <p>The number of cells in a birds eye. It defines the resolution of how good a bird can see and detect the direction of food.</p>
-                        <FluentNumberField @bind-Value="EyeCells" />
-                    </FluentCard>
+                    <ParameterCardInt Title="Cells per Eye" Content="The number of cells in a birds eye. It defines the resolution of how good a bird can see and detect the direction of food." @bind-Value=Simulation.Parameters.EyeCells />
                 </FluentGridItem>
+
                 <FluentGridItem xs="12" sm="6">
-                    <FluentCard>
-                        <h5 class="card-title">Field of View Range</h5>
-                        <p>The maximum distance a bird can see.</p>
-                        <FluentNumberField @bind-Value="FovRange" />
-                    </FluentCard>
+                    <ParameterCardDouble Title="Field of View Range" Content="The maximum distance a bird can see." @bind-Value=Simulation.Parameters.FovRange />
                 </FluentGridItem>
+
                 <FluentGridItem xs="12" sm="6">
-                    <FluentCard>
-                        <h5 class="card-title">Field of View Angle</h5>
-                        <p>The angle of the field of view.</p>
-                        <FluentNumberField @bind-Value="FovAngle" />
-                    </FluentCard>
+                    <ParameterCardDouble Title="Field of View Angle" Content="The angle of the field of view." @bind-Value=Simulation.Parameters.FovAngle />
                 </FluentGridItem>
+
             </FluentGrid>
         </FluentTab>
+
     </FluentTabs>
 </div>
-

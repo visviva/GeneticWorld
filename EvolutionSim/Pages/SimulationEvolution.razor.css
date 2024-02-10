@@ -25,13 +25,6 @@
     justify-content: center;
 }
 
-.progress-container {
-    flex-grow: 1;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 5px;
-}
-
 .label {
     white-space: nowrap; /* Prevents the labels from wrapping */
 }

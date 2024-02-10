@@ -1,0 +1,19 @@
+﻿<FluentCard>
+    <h5 class="card-title">@Title</h5>
+    <p class="card-text">@Content</p>
+    @ChildContent
+    <FluentButton @onclick="@OnClick">@ButtonLabel</FluentButton>
+</FluentCard>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+    [Parameter]
+    public string Content { get; set; } = string.Empty;
+    [Parameter]
+    public string ButtonLabel { get; set; } = string.Empty;
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

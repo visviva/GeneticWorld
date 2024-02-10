@@ -1,0 +1,32 @@
+﻿<FluentCard>
+    <h5 class="card-title">@Title</h5>
+    <p>@Content</p>
+    @ChildContent
+    <FluentNumberField @bind-Value="@Value" />
+</FluentCard>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+    [Parameter]
+    public string Content { get; set; } = string.Empty;
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private int _value;
+
+    [Parameter]
+    public int Value
+    {
+        get => _value;
+        set
+        {
+            if (_value == value) return;
+            _value = value;
+            ValueChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<int> ValueChanged { get; set; }
+}
