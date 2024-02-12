@@ -1,8 +1,11 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Drawing;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
+using ApexCharts;
+using EvolutionSim.Components;
 using EvolutionSim.Utility;
 using GeometRi;
 using Microsoft.FluentUI.AspNetCore.Components;
@@ -19,12 +22,21 @@ public partial class SimulationEvolution
 
     private Simulation.Simulation _simulation = new(new RandomGen());
 
+    EvolutionSim.Components.Chart _chart = new();
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await JSRuntime.InvokeAsync<object>("initSimulation", DotNetObjectReference.Create(this));
+            _simulation.BeforeEvolutionHook += AddNewStatisticsSet;
         }
+    }
+
+    private void AddNewStatisticsSet(object? sender, EvolutionStatistics statistics)
+    {
+        List<EvolutionStatistics> listStats = [statistics];
+        _chart.AddStatistics(listStats);
     }
 
     [JSInvokable]
@@ -81,6 +93,8 @@ public partial class SimulationEvolution
     public void Restart()
     {
         _simulation = new(new RandomGen());
+        _simulation.BeforeEvolutionHook += AddNewStatisticsSet;
+        _chart.Clear();
         StateHasChanged();
     }
 }

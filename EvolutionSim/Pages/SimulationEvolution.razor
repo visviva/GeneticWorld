@@ -28,7 +28,7 @@ It is designed after the awesome tutorial series
 </div>
 
 <div class="container">
-    <FluentTabs Orientation="Orientation.Horizontal" Style="width: 100%; flex-grow: 1; margin: 0 auto;">
+    <FluentTabs Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" Style="width: 100%; flex-grow: 1; margin: 0 auto;">
 
         <FluentTab Label="General" Id="tab-v1" Style="flex-grow: 1; margin: 0 auto;">
             <FluentGrid>
@@ -96,6 +96,18 @@ It is designed after the awesome tutorial series
                 </FluentGridItem>
 
             </FluentGrid>
+        </FluentTab>
+
+        <FluentTab Label="Statistics" Id="tab-v3" Style="flex-grow: 1; margin: 0 auto;">
+            @if(_chart.Statistics.Count == 0)
+            {
+                <div class="info-box">
+                    <b>Info:</b> Wait until the first generation is complete and ready to evolve to see some data.
+                </div>
+            }
+            <div style="margin: 20px auto">
+                <Chart @ref=_chart />
+            </div>
         </FluentTab>
 
     </FluentTabs>

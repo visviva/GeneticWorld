@@ -1,0 +1,52 @@
+﻿@using EvolutionSim.Utility
+
+<ApexChart @ref=chart
+           TItem="EvolutionStatistics"
+           Title="Acquired Food per Generation"
+           Debug >
+
+
+    <ApexPointSeries TItem="EvolutionStatistics"
+                     Items="Statistics"
+                     Name="Mean"
+                     SeriesType="SeriesType.Line"
+                     XValue="@(e => e.Cycle)"
+                     YValue="@(e => Math.Round((decimal)e.Mean,2))"
+                     ShowDataLabels />
+
+     <ApexPointSeries TItem="EvolutionStatistics"
+                      Items="Statistics"
+                      Name="Max"
+                      SeriesType="SeriesType.Line"
+                      XValue="@(e => e.Cycle)"
+                      YValue="@(e => Math.Round((decimal)e.Max,2))"
+                      ShowDataLabels />
+
+     <ApexPointSeries TItem="EvolutionStatistics"
+                      Items="Statistics"
+                      Name="Min"
+                      SeriesType="SeriesType.Line"
+                      XValue="@(e => e.Cycle)"
+                      YValue="@(e => Math.Round((decimal)e.Min,2))"
+                      ShowDataLabels />
+
+
+ </ApexChart>
+
+ @code {
+    public List<EvolutionStatistics> Statistics { get; set; } = [];
+
+    private ApexChart<EvolutionStatistics> chart;
+
+    public async Task AddStatistics(IReadOnlyList<EvolutionStatistics> stats)
+    {
+        Statistics.AddRange(stats);
+        await chart.UpdateSeriesAsync();
+    }
+
+    public async Task Clear()
+    {
+        Statistics.Clear();
+        await chart.UpdateSeriesAsync();
+    }
+}

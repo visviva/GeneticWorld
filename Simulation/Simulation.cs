@@ -1,10 +1,13 @@
 ﻿using Evolution;
+using EvolutionSim.Utility;
 using GeometRi;
 
 namespace Simulation;
 
 public partial class Simulation
 {
+    public event EventHandler<EvolutionStatistics> BeforeEvolutionHook;
+    public int Cycle { get; set; } = 0;
     public double SpeedMin { get; set; } = Parameters.SpeedMin;
     public double SpeedMax { get; set; } = Parameters.SpeedMax;
     public double SpeedAccel { get; set; } = Parameters.SpeedAccel;
@@ -40,11 +43,21 @@ public partial class Simulation
 
         if (Age > GenerationLength)
         {
+            BeforeEvolutionHook?.Invoke(this, GetStatistics());
+            Cycle++;
             Evolve();
             return SimulationResult.NewGeneration;
         }
 
         return SimulationResult.CurrentGeneration;
+    }
+
+    private EvolutionStatistics GetStatistics()
+    {
+        double mean = World.Animals.Average((animal) => animal.Satiation);
+        int max = World.Animals.MaxBy((animal) => animal.Satiation)?.Satiation ?? 0;
+        int min = World.Animals.MinBy((animal) => animal.Satiation)?.Satiation ?? 0;
+        return new(Cycle, mean, max, min);
     }
 
     public double Percentage => Age / (double)GenerationLength;
@@ -89,7 +102,7 @@ public partial class Simulation
             {
                 var distance = animal.Position.DistanceTo(food.Position);
 
-                if (distance <= 0.009)
+                if (distance <= 0.02)
                 {
                     animal.Satiation++;
                     food.RandomFoodPosition();

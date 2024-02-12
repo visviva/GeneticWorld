@@ -36,3 +36,11 @@
     border-left: 6px solid #ff9900; /* Darker yellow border on the left */
     margin: 10px 0; /* Adds some space around the box */
 }
+
+.info-box {
+    padding: 10px;
+    background-color: #9dde99; /* Light green background */
+    color: #333; /* Dark text color for contrast */
+    border-left: 6px solid #4aa644; /* Darker green border on the left */
+    margin: 10px 0; /* Adds some space around the box */
+}
