@@ -78,8 +78,11 @@ public partial class Simulation
             var vision = animal.ProcessVision(World.Foods);
             var response = animal.Brain.Network.Propagate(vision);
 
-            var speed = Math.Clamp(response[0], -SpeedAccel, SpeedAccel);
-            var rotation = Math.Clamp(response[1], -RotationAccel, RotationAccel);
+            var r0 = Math.Clamp(response[0], 0.0, 1.0) - 0.5;
+            var r1 = Math.Clamp(response[1], 0.0, 1.0) - 0.5;
+
+            var speed = Math.Clamp(r0 + r1, -SpeedAccel, SpeedAccel);
+            var rotation = Math.Clamp(r0 - r1, -RotationAccel, RotationAccel);
 
             animal.Speed = Math.Clamp(animal.Speed + speed, SpeedMin, SpeedMax);
             animal.Rotation = Rotation.FromEulerAngles(0, 0, animal.Rotation.ToAngle + rotation, "xyz");
