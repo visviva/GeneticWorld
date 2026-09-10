@@ -73,10 +73,11 @@ public partial class Simulation
 
     private void ProcessBrain()
     {
+        Span<double> response = stackalloc double[2];
         foreach (var animal in World.Animals)
         {
-            var vision = animal.ProcessVision(World.Foods);
-            var response = animal.Brain.Network.Propagate(vision);
+            var vision = animal.ProcessVisionBuffered(World.Foods);
+            animal.Brain.Network.PropagateInto(vision, response);
 
             var r0 = Math.Clamp(response[0], 0.0, 1.0) - 0.5;
             var r1 = Math.Clamp(response[1], 0.0, 1.0) - 0.5;
@@ -85,8 +86,7 @@ public partial class Simulation
             var rotation = (r0 - r1) * RotationAccel;
 
             animal.Speed = Math.Clamp(animal.Speed + speed, SpeedMin, SpeedMax);
-            var heading = animal.Rotation.ToEulerAngles("xyz")[2];
-            animal.Rotation = Rotation.FromEulerAngles(0, 0, heading + rotation, "xyz");
+            animal.Heading += rotation;
         }
     }
 
@@ -104,9 +104,9 @@ public partial class Simulation
         {
             foreach (var food in World.Foods)
             {
-                var distance = WorldGeometry.Distance(animal.Position, food.Position);
+                var distanceSquared = WorldGeometry.DistanceSquared(animal.Position, food.Position);
 
-                if (distance <= 0.02)
+                if (distanceSquared <= 0.02 * 0.02)
                 {
                     animal.Satiation++;
                     food.RandomFoodPosition();
@@ -117,8 +117,9 @@ public partial class Simulation
 
     private static void MoveAnimal(Animal animal)
     {
-        Vector3d movement = new Vector3d(0, animal.Speed, 0);
-        Vector3d rotatedMovement = animal.Rotation * movement;
-        animal.Position = WorldGeometry.Wrap(animal.Position.Translate(rotatedMovement));
+        animal.Position = new Point3d(
+            WorldGeometry.WrapCoordinate(animal.Position.X - Math.Sin(animal.Heading) * animal.Speed),
+            WorldGeometry.WrapCoordinate(animal.Position.Y + Math.Cos(animal.Heading) * animal.Speed),
+            animal.Position.Z);
     }
 }

@@ -167,12 +167,17 @@ CanvasRenderingContext2D.prototype.drawCircles = function drawCircles(circleData
     }
 }
 
-async function redraw(time: number): Promise<void> {
-    if (!window.simulationRunning)
+let animationVersion = 0;
+
+async function redraw(time: number, version: number): Promise<void> {
+    if (!window.simulationRunning || version !== animationVersion)
         return;
 
     try {
         const worldJsonString: string = await window.simulation.instance.invokeMethodAsync('Update', time);
+        if (!window.simulationRunning || version !== animationVersion)
+            return;
+
         const world: RenderInformation = JSON.parse(worldJsonString);
         let canvasContext = window.simulation.canvas.getContext('2d');
         canvasContext.clear();
@@ -181,8 +186,8 @@ async function redraw(time: number): Promise<void> {
     } catch (e) {
         console.error('Error updating simulation:', e);
     } finally {
-        if (window.simulationRunning)
-            window.animationFrame = window.requestAnimationFrame(redraw);
+        if (window.simulationRunning && version === animationVersion)
+            window.animationFrame = window.requestAnimationFrame(time => redraw(time, version));
     }
 }
 
@@ -207,6 +212,7 @@ window.initSimulation = (instance: any): void => {
 
 window.pauseSimulation = (): void => {
     window.simulationRunning = false;
+    animationVersion++;
     window.cancelAnimationFrame(window.animationFrame);
 };
 
@@ -215,7 +221,8 @@ window.resumeSimulation = (): void => {
         return;
 
     window.simulationRunning = true;
-    window.animationFrame = window.requestAnimationFrame(redraw);
+    const version = animationVersion;
+    window.animationFrame = window.requestAnimationFrame(time => redraw(time, version));
 };
 
 export { };

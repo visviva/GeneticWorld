@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Drawing;
+using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using ApexCharts;
@@ -55,7 +56,9 @@ public partial class SimulationEvolution
     [JSInvokable]
     public string Update(float time)
     {
-        _simulation.step();
+        // An animation callback may already be in flight when fast-forward starts.
+        if (!_isTraining)
+            _simulation.step();
 
         double size = _canvasWidth * 0.016;
         int radius = (int)(_canvasWidth * 0.006);
@@ -63,7 +66,7 @@ public partial class SimulationEvolution
         var creatures = _simulation.World.Animals.Select(animal =>
         {
             var position = Utility.Utility.ScalePointToCanvas(animal.Position, _canvasWidth, _canvasHeight);
-            var heading = animal.Rotation.ToEulerAngles("xyz")[2];
+            var heading = animal.Heading;
             return new RenderCreature(new(position), heading, size);
         }).ToList();
 
@@ -95,22 +98,24 @@ public partial class SimulationEvolution
         try
         {
             await JSRuntime.InvokeAsync<object>("pauseSimulation");
-            var stepsPerBatch = Math.Max(1, _simulation.GenerationLength / 100);
             var generationComplete = false;
+            var batchTimer = new Stopwatch();
 
             while (!generationComplete)
             {
-                for (var step = 0; step < stepsPerBatch; step++)
+                // Bound main-thread work by time, regardless of population or generation length.
+                batchTimer.Restart();
+                do
                 {
                     generationComplete = _simulation.step() == Simulation.Simulation.SimulationResult.NewGeneration;
-                    if (generationComplete)
-                    {
-                        break;
-                    }
                 }
+                while (!generationComplete && batchTimer.Elapsed.TotalMilliseconds < 12);
 
-                _lastRenderedProgress = _progress;
-                StateHasChanged();
+                if (_lastRenderedProgress != _progress || generationComplete)
+                {
+                    _lastRenderedProgress = _progress;
+                    StateHasChanged();
+                }
 
                 if (!generationComplete)
                 {

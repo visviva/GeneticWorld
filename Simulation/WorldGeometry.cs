@@ -16,7 +16,15 @@ internal static class WorldGeometry
 
     public static double Distance(Point3d first, Point3d second)
     {
-        return ShortestDisplacement(first, second).Norm;
+        return Math.Sqrt(DistanceSquared(first, second));
+    }
+
+    public static double DistanceSquared(Point3d first, Point3d second)
+    {
+        var dx = ShortestDelta(second.X - first.X);
+        var dy = ShortestDelta(second.Y - first.Y);
+        var dz = second.Z - first.Z;
+        return dx * dx + dy * dy + dz * dz;
     }
 
     public static Point3d Wrap(Point3d point)
@@ -24,7 +32,7 @@ internal static class WorldGeometry
         return new Point3d(WrapCoordinate(point.X), WrapCoordinate(point.Y), point.Z);
     }
 
-    private static double ShortestDelta(double delta)
+    internal static double ShortestDelta(double delta)
     {
         if (delta > WorldSize / 2.0)
         {
@@ -39,7 +47,7 @@ internal static class WorldGeometry
         return delta;
     }
 
-    private static double WrapCoordinate(double coordinate)
+    internal static double WrapCoordinate(double coordinate)
     {
         coordinate %= WorldSize;
         return coordinate < 0 ? coordinate + WorldSize : coordinate;

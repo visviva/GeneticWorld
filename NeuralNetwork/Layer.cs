@@ -18,4 +18,17 @@ public class Layer
     public Layer(List<Neuron> neurons) => _neurons = neurons;
 
     public List<double> Propagate(List<double> inputs) => _neurons.Select(neuron => neuron.Propagate(inputs)).ToList();
+
+    public void PropagateInto(ReadOnlySpan<double> inputs, Span<double> outputs)
+    {
+        if (outputs.Length != _neurons.Count)
+        {
+            throw new MismatchedInputSizeException($"Expected {_neurons.Count} outputs, got {outputs.Length}");
+        }
+
+        for (var i = 0; i < _neurons.Count; i++)
+        {
+            outputs[i] = _neurons[i].PropagateValues(inputs);
+        }
+    }
 }

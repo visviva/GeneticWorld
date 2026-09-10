@@ -27,6 +27,44 @@ public class Network
     {
         return [.. Layers.Aggregate(inputs, (nextInput, nextLayer) => nextLayer.Propagate(nextInput))];
     }
+
+    // Scratch storage belongs to this call; results remain valid after the next propagation.
+    public void PropagateInto(scoped ReadOnlySpan<double> inputs, Span<double> outputs)
+    {
+        if (Layers.Count == 0)
+        {
+            if (inputs.Length != outputs.Length)
+                throw new MismatchedInputSizeException("Input and output sizes must match for an empty network");
+            inputs.CopyTo(outputs);
+            return;
+        }
+
+        var width = 0;
+        for (var i = 0; i < Layers.Count - 1; i++)
+            width = Math.Max(width, Layers[i].CountOfNeurons);
+
+        double[]? rented = null;
+        Span<double> scratch = width <= 128
+            ? stackalloc double[width * 2]
+            : (rented = System.Buffers.ArrayPool<double>.Shared.Rent(checked(width * 2)));
+        try
+        {
+            for (var i = 0; i < Layers.Count; i++)
+            {
+                var destination = i == Layers.Count - 1
+                    ? outputs
+                    : scratch.Slice((i % 2) * width, Layers[i].CountOfNeurons);
+                Layers[i].PropagateInto(inputs, destination);
+                inputs = destination;
+            }
+        }
+        finally
+        {
+            if (rented != null)
+                System.Buffers.ArrayPool<double>.Shared.Return(rented);
+        }
+    }
+
     public static Network FromWeights(IReadOnlyList<LayerTopology> topology, IReadOnlyList<double> weights)
     {
         var queue = new Queue<double>(weights);

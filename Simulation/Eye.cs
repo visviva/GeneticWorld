@@ -99,24 +99,41 @@ public class Eye
 
     public List<double> ProcessVision(Point3d position, Rotation rotation, IReadOnlyList<Food> foods)
     {
-        var cells = Enumerable.Repeat(0.0, Cells).ToList();
+        var cells = new double[Cells];
+        ProcessVisionInto(position, rotation, foods, cells);
+        return cells.ToList();
+    }
+
+    public void ProcessVisionInto(Point3d position, Rotation rotation, IReadOnlyList<Food> foods, Span<double> cells)
+        => ProcessVisionInto(position, rotation.ToEulerAngles("xyz")[2], foods, cells);
+
+    internal void ProcessVisionInto(Point3d position, double heading, IReadOnlyList<Food> foods, Span<double> cells)
+    {
+        if (cells.Length != Cells)
+            throw new ArgumentException("Vision buffer must match the eye cell count", nameof(cells));
+
+        cells.Clear();
+        var halfFovAngle = FovAngle / 2.0;
+        var rangeSquared = FovRange * FovRange;
 
         foreach (var food in foods)
         {
-            var displacement = WorldGeometry.ShortestDisplacement(position, food.Position);
-            var distance = displacement.Norm;
+            var dx = WorldGeometry.ShortestDelta(food.Position.X - position.X);
+            var dy = WorldGeometry.ShortestDelta(food.Position.Y - position.Y);
+            var dz = food.Position.Z - position.Z;
+            var distanceSquared = dx * dx + dy * dy + dz * dz;
 
-            if (distance >= FovRange)
+            if (FovRange <= 0 || distanceSquared >= rangeSquared || distanceSquared == 0)
             {
                 continue;
             }
 
-            var angle = AngleToYAxis(displacement);
+            var distance = Math.Sqrt(distanceSquared);
+            // Same signed angle to +Y, without allocating 3D vectors.
+            var angle = Math.Acos(Math.Clamp(dy / distance, -1.0, 1.0)) * (dx > 0 ? -1.0 : 1.0);
 
-            angle -= rotation.ToEulerAngles("xyz")[2];
+            angle -= heading;
             angle = WrapAngle(angle, -Math.PI, Math.PI);
-
-            var halfFovAngle = FovAngle / 2.0;
 
             if (DoubleComparer.LessThan(angle, -halfFovAngle) || DoubleComparer.GreaterThan(angle, halfFovAngle))
             {
@@ -127,14 +144,12 @@ public class Eye
             var cell = angle / FovAngle;
             cell *= Cells;
 
-            int selectedCell = Math.Min((int)cell, cells.Count - 1);
+            int selectedCell = Math.Min((int)cell, cells.Length - 1);
 
             var energy = (FovRange - distance) / FovRange;
 
             cells[selectedCell] += energy;
         }
-
-        return cells;
     }
 
     private static double WrapAngle(double val, double min, double max)
@@ -153,13 +168,6 @@ public class Eye
         }
 
         return val;
-    }
-
-    private static double AngleToYAxis(Vector3d v)
-    {
-        var x = new Vector3d(0.0, 1.00, 0);
-        var sign = v.X > 0.0 ? -1.0 : 1.0;
-        return v.AngleTo(x) * sign;
     }
 
     public static class DoubleComparer

@@ -23,15 +23,21 @@ public class Neuron
         Weights = weights;
     }
 
-    public double Propagate(List<double> inputs)
+    public double Propagate(List<double> inputs) => PropagateValues(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(inputs));
+
+    public double PropagateValues(ReadOnlySpan<double> inputs)
     {
-        if (inputs.Count != Weights.Count)
+        if (inputs.Length != Weights.Count)
         {
-            throw new MismatchedInputSizeException($"Got {inputs.Count} inputs, but {Weights.Count} were expected");
+            throw new MismatchedInputSizeException($"Got {inputs.Length} inputs, but {Weights.Count} were expected");
         }
 
-        var output = Bias + inputs.Zip(Weights, (input, weight) => input * weight).Sum();
+        double sum = 0;
+        for (var i = 0; i < inputs.Length; i++)
+        {
+            sum += inputs[i] * Weights[i];
+        }
 
-        return Math.Max(0, output);
+        return Math.Max(0, Bias + sum);
     }
 }
