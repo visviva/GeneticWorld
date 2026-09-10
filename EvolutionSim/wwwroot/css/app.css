@@ -136,3 +136,42 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+/* ApexCharts renders its tooltip outside the component's scoped CSS boundary. */
+.apexcharts-tooltip,
+.apexcharts-tooltip.apexcharts-theme-light,
+.apexcharts-xaxistooltip,
+.apexcharts-xaxistooltip.apexcharts-theme-light {
+    background: #0d211b !important;
+    border: 1px solid rgba(75, 243, 188, 0.22) !important;
+    border-radius: 8px !important;
+    color: var(--text-strong) !important;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.42) !important;
+}
+
+.apexcharts-tooltip-title,
+.apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
+    background: rgba(75, 243, 188, 0.07) !important;
+    border-bottom: 1px solid var(--line) !important;
+    color: var(--accent-soft) !important;
+}
+
+.apexcharts-tooltip-text,
+.apexcharts-tooltip-text-y-value,
+.apexcharts-tooltip-text-z-value,
+.apexcharts-xaxistooltip-text {
+    color: var(--text-strong) !important;
+}
+
+.apexcharts-tooltip-text-y-label,
+.apexcharts-tooltip-text-z-label {
+    color: var(--text-muted) !important;
+}
+
+.apexcharts-xaxistooltip-bottom::before {
+    border-bottom-color: rgba(75, 243, 188, 0.22) !important;
+}
+
+.apexcharts-xaxistooltip-bottom::after {
+    border-bottom-color: #0d211b !important;
+}
