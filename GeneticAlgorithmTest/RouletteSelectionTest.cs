@@ -13,6 +13,14 @@ namespace GeneticAlgorithmTest
             public double GetRandomSign() => throw new NotImplementedException();
         }
 
+        class FixedRandomGenerator(params double[] values) : IRandomHelper
+        {
+            readonly Queue<double> _values = new(values);
+
+            public double GetRandom_0_1() => _values.Dequeue();
+            public double GetRandomSign() => throw new NotImplementedException();
+        }
+
         class FakeIndividual(double fitness) : IIndividual
         {
             public double Fitness { get; set; } = fitness;
@@ -45,6 +53,37 @@ namespace GeneticAlgorithmTest
                 var real = (double)histogram[individual] / (double)cycles;
                 Assert.AreEqual(expected, real, 0.01);
             }
+        }
+
+        [TestMethod]
+        public void ZeroTotalFitnessUsesUniformSelection()
+        {
+            List<IIndividual> population =
+            [
+                new FakeIndividual(0),
+                new FakeIndividual(0),
+                new FakeIndividual(0),
+                new FakeIndividual(0)
+            ];
+            var rng = new FixedRandomGenerator(0.0, 0.25, 0.5, 0.99);
+            var selector = new RouletteWheelSelection();
+
+            var selected = population.Select(_ => selector.Select(rng, population)).ToList();
+
+            CollectionAssert.AreEqual(population, selected);
+        }
+
+        [DataTestMethod]
+        [DataRow(-1.0)]
+        [DataRow(double.NaN)]
+        [DataRow(double.PositiveInfinity)]
+        public void InvalidFitnessIsRejected(double fitness)
+        {
+            List<IIndividual> population = [new FakeIndividual(fitness)];
+            var selector = new RouletteWheelSelection();
+
+            Assert.ThrowsException<ArgumentOutOfRangeException>(
+                () => selector.Select(new FixedRandomGenerator(0.5), population));
         }
     }
 }

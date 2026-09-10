@@ -61,17 +61,29 @@ public partial class GeneticAlgorithmTest
     public void TestEvolve()
     {
         List<IIndividual> newPopulation = _individuals;
+        var bestFitness = newPopulation.Max(individual => individual.Fitness);
 
         for (int i = 0; i < 10; i++)
         {
             newPopulation = _geneticAlgorithm!.Evolve(newPopulation);
+            var evolvedBestFitness = newPopulation.Max(individual => individual.Fitness);
+
+            Assert.IsTrue(evolvedBestFitness >= bestFitness);
+            bestFitness = evolvedBestFitness;
         }
 
         Assert.AreEqual(4, newPopulation.Count);
+    }
 
-        CollectionAssert.AreEqual(new List<double> { 2.480383, 1.5418335, 3.0647830000000003 }, newPopulation[0].Chromosome.Genes.ToList());
-        CollectionAssert.AreEqual(new List<double> { 2.9118445, 1.265196, 3.8708115000000003 }, newPopulation[1].Chromosome.Genes.ToList());
-        CollectionAssert.AreEqual(new List<double> { 0.60000999999999982, 2.0641005, 3.841123 }, newPopulation[2].Chromosome.Genes.ToList());
-        CollectionAssert.AreEqual(new List<double> { 3.157187, 1.5418335, 3.8263875000000005 }, newPopulation[3].Chromosome.Genes.ToList());
+    [TestMethod]
+    public void EvolvePreservesBestChromosomeAsElite()
+    {
+        var best = _individuals.MaxBy(individual => individual.Fitness)!;
+
+        var newPopulation = _geneticAlgorithm!.Evolve(_individuals);
+
+        CollectionAssert.AreEqual(best.Chromosome.Genes.ToList(), newPopulation[0].Chromosome.Genes.ToList());
+        Assert.AreNotSame(best, newPopulation[0]);
+        Assert.AreNotSame(best.Chromosome, newPopulation[0].Chromosome);
     }
 }

@@ -8,13 +8,20 @@ public class GeneticAlgorithm
     readonly ICrossover _crossover;
     readonly IRandomHelper _randomGenerator;
     readonly IMutationMethod _mutationMethod;
+    readonly int _eliteCount;
 
-    public GeneticAlgorithm(IRandomHelper rng, ISelectionMethod selector, ICrossover crossover, IMutationMethod mutationMethod)
+    public GeneticAlgorithm(IRandomHelper rng, ISelectionMethod selector, ICrossover crossover, IMutationMethod mutationMethod, int eliteCount = 1)
     {
+        if (eliteCount < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(eliteCount), "Elite count cannot be negative");
+        }
+
         _selector = selector;
         _crossover = crossover;
         _randomGenerator = rng;
         _mutationMethod = mutationMethod;
+        _eliteCount = eliteCount;
     }
 
     public List<IIndividual> Evolve(List<IIndividual> population)
@@ -24,9 +31,15 @@ public class GeneticAlgorithm
             throw new EmptyPopulationException("The population to evolve is empty");
         }
 
-        var newPopulation = new List<IIndividual>();
+        var elites = population
+            .OrderByDescending(individual => individual.Fitness)
+            .Take(Math.Min(_eliteCount, population.Count))
+            .Select(Clone)
+            .ToList();
+        var newPopulation = new List<IIndividual>(population.Count);
+        newPopulation.AddRange(elites);
 
-        for (int i = 0; i < population.Count; i++)
+        for (int i = newPopulation.Count; i < population.Count; i++)
         {
             (IIndividual, IIndividual) parents = Selection(population);
             IIndividual descendant = Crossover(parents);
@@ -35,6 +48,12 @@ public class GeneticAlgorithm
         }
 
         return newPopulation;
+    }
+
+    private static IIndividual Clone(IIndividual individual)
+    {
+        var chromosome = new Chromosome(individual.Chromosome.Genes.ToList());
+        return individual.create(chromosome);
     }
 
     private (IIndividual, IIndividual) Selection(List<IIndividual> population)
