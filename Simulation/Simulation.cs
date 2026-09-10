@@ -85,7 +85,8 @@ public partial class Simulation
             var rotation = Math.Clamp(r0 - r1, -RotationAccel, RotationAccel);
 
             animal.Speed = Math.Clamp(animal.Speed + speed, SpeedMin, SpeedMax);
-            animal.Rotation = Rotation.FromEulerAngles(0, 0, animal.Rotation.ToAngle + rotation, "xyz");
+            var heading = animal.Rotation.ToEulerAngles("xyz")[2];
+            animal.Rotation = Rotation.FromEulerAngles(0, 0, heading + rotation, "xyz");
         }
     }
 
