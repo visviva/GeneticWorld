@@ -106,7 +106,7 @@ public class Eye
             var vec = food.Position - position;
             var distance = vec.ToVector.Norm;
 
-            if (distance >= FovAngle)
+            if (distance >= FovRange)
             {
                 continue;
             }

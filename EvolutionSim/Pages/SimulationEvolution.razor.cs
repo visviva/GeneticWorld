@@ -19,6 +19,7 @@ public partial class SimulationEvolution
     private int _canvasWidth { get; set; } = 0;
     private int _canvasHeight { get; set; } = 0;
     private int _progress => (int)(_simulation.Percentage * 100.0);
+    private int _lastRenderedProgress = -1;
 
     private Simulation.Simulation _simulation = new(new RandomGen());
 
@@ -58,6 +59,7 @@ public partial class SimulationEvolution
         var triangles = _simulation.World.Animals.Select(animal =>
         {
             var visualizedAnimal = Utility.Utility.ConstructTriangleFromIncenter(Utility.Utility.ScalePointToCanvas(animal.Position, _canvasWidth, _canvasHeight), size);
+            visualizedAnimal = visualizedAnimal.Rotate(Rotation.FromEulerAngles(0, 0, Math.PI, "xyz"), visualizedAnimal.Incenter);
             visualizedAnimal = visualizedAnimal.Rotate(animal.Rotation, visualizedAnimal.Incenter);
             return new RenderTriangle(new(visualizedAnimal.A), new(visualizedAnimal.B), new(visualizedAnimal.C));
         }).ToList();
@@ -67,7 +69,11 @@ public partial class SimulationEvolution
 
         var newWorld = new RenderInformation(triangles, circles);
 
-        StateHasChanged();
+        if (_lastRenderedProgress != _progress)
+        {
+            _lastRenderedProgress = _progress;
+            StateHasChanged();
+        }
 
         var serializedWorld = JsonSerializer.Serialize(newWorld);
         return serializedWorld;
@@ -76,18 +82,35 @@ public partial class SimulationEvolution
     public async Task Train()
     {
         await JSRuntime.InvokeAsync<object>("pauseSimulation");
-        while (true)
+        try
         {
-            var result = await Task.Run(() => _simulation.step());
+            var stepsPerBatch = Math.Max(1, _simulation.GenerationLength / 100);
+            var generationComplete = false;
 
-            StateHasChanged();
-            if (result == Simulation.Simulation.SimulationResult.NewGeneration)
+            while (!generationComplete)
             {
-                break;
+                for (var step = 0; step < stepsPerBatch; step++)
+                {
+                    generationComplete = _simulation.step() == Simulation.Simulation.SimulationResult.NewGeneration;
+                    if (generationComplete)
+                    {
+                        break;
+                    }
+                }
+
+                _lastRenderedProgress = _progress;
+                StateHasChanged();
+
+                if (!generationComplete)
+                {
+                    await Task.Delay(1);
+                }
             }
-            await Task.Delay(1);
         }
-        await JSRuntime.InvokeAsync<object>("resumeSimulation");
+        finally
+        {
+            await JSRuntime.InvokeAsync<object>("resumeSimulation");
+        }
     }
 
     public void Restart()

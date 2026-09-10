@@ -6,6 +6,7 @@ declare global {
         animationFrame: number;
         pauseSimulation: () => void;
         resumeSimulation: () => void;
+        simulationRunning: boolean;
     }
 
     interface CanvasRenderingContext2D {
@@ -112,20 +113,23 @@ CanvasRenderingContext2D.prototype.drawCircles = function drawCircles(circleData
     }
 }
 
-function redraw(time: number): void {
-    window.resumeSimulation();
-    const newWorld: Promise<string> = window.simulation.instance.invokeMethodAsync('Update', time);
-    newWorld.then((worldJsonString: string) => {
-        try {
-            const world: RenderInformation = JSON.parse(worldJsonString);
-            let canvasContext = window.simulation.canvas.getContext('2d');
-            canvasContext.clear();
-            canvasContext.drawCircles(world.circles);
-            canvasContext.drawTriangles(world.triangles);
-        } catch (e) {
-            console.error('Error parsing JSON:', e);
-        }
-    });
+async function redraw(time: number): Promise<void> {
+    if (!window.simulationRunning)
+        return;
+
+    try {
+        const worldJsonString: string = await window.simulation.instance.invokeMethodAsync('Update', time);
+        const world: RenderInformation = JSON.parse(worldJsonString);
+        let canvasContext = window.simulation.canvas.getContext('2d');
+        canvasContext.clear();
+        canvasContext.drawCircles(world.circles);
+        canvasContext.drawTriangles(world.triangles);
+    } catch (e) {
+        console.error('Error updating simulation:', e);
+    } finally {
+        if (window.simulationRunning)
+            window.animationFrame = window.requestAnimationFrame(redraw);
+    }
 }
 
 window.initSimulation = (instance: any): void => {
@@ -140,17 +144,23 @@ window.initSimulation = (instance: any): void => {
         instance: instance,
         canvas: theCanvas
     };
+    window.simulationRunning = false;
 
     window.addEventListener("resize", onResize);
     onResize();
-    redraw(0.0);
+    window.resumeSimulation();
 };
 
 window.pauseSimulation = (): void => {
+    window.simulationRunning = false;
     window.cancelAnimationFrame(window.animationFrame);
 };
 
 window.resumeSimulation = (): void => {
+    if (window.simulationRunning)
+        return;
+
+    window.simulationRunning = true;
     window.animationFrame = window.requestAnimationFrame(redraw);
 };
 

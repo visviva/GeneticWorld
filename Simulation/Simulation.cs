@@ -116,7 +116,7 @@ public partial class Simulation
 
     private static void MoveAnimal(Animal animal)
     {
-        Vector3d movement = new Vector3d(0, -animal.Speed, 0);
+        Vector3d movement = new Vector3d(0, animal.Speed, 0);
         Vector3d rotatedMovement = animal.Rotation * movement;
         animal.Position = animal.Position.Translate(rotatedMovement);
         WrapPosition(animal);

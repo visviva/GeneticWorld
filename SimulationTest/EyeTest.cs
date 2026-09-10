@@ -61,6 +61,23 @@ public partial class EyeTest
         Assert.AreEqual(expectedVision, actualVision);
     }
 
+    [TestMethod]
+    public void FoodOutsideFovRangeProducesNoSignal()
+    {
+        _testEye.FovRange = 0.25;
+        _testEye.FovAngle = 2 * Math.PI;
+
+        var eyePosition = new Point3d(0.5, 0.5, 0);
+        var eyeRotation = Rotation.FromEulerAngles(0, 0, 0, "xyz");
+
+        List<Food> foods = [new Food(new MockRandom())];
+        foods[0].Position = new Point3d(0.5, 1.0, 0);
+
+        var vision = _testEye.ProcessVision(eyePosition, eyeRotation, foods);
+
+        Assert.IsTrue(vision.All(value => value == 0.0));
+    }
+
     [DataTestMethod]
     [DataRow(Math.PI * 0.00, "         +   ")]
     [DataRow(Math.PI * 0.25, "        +    ")]
