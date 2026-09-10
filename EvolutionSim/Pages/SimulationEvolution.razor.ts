@@ -40,18 +40,11 @@ function onResize(): void {
         newWidth = maxHeight * aspectRatio;
     }
 
-    console.log('New canvas dimensions:', newWidth, newHeight);
-
     window.simulation.canvas.width = newWidth;
     window.simulation.canvas.height = newHeight;
 
-    window.simulation.canvas.style.border = `${5 / devicePixelRatio}px solid LightSteelBlue`;
-    window.simulation.canvas.style.margin = `${10 / devicePixelRatio}px`;
-
-    let newStyleWidth: string = `${0.7 * newWidth / devicePixelRatio}px`;
-    let newStyleHeight: string = `${0.7 * newHeight / devicePixelRatio}px`;
-
-    console.log('New canvas style:', newStyleWidth, newStyleHeight);
+    let newStyleWidth: string = `${newWidth / devicePixelRatio}px`;
+    let newStyleHeight: string = `${newHeight / devicePixelRatio}px`;
 
     window.simulation.canvas.style.width = newStyleWidth;
     window.simulation.canvas.style.height = newStyleHeight;
@@ -81,7 +74,7 @@ interface RenderInformation {
 }
 
 CanvasRenderingContext2D.prototype.clear = function clearCanvas(): void {
-    this.fillStyle = 'rgb(250, 250, 255)';
+    this.fillStyle = 'rgb(6, 16, 14)';
     this.fillRect(0, 0, this.canvas.width, this.canvas.height);
 }
 CanvasRenderingContext2D.prototype.drawTriangles = function drawTriangles(triangleData: Triangle[]): void {
@@ -89,9 +82,11 @@ CanvasRenderingContext2D.prototype.drawTriangles = function drawTriangles(triang
         const { a, b, c } = triangle;
 
         this.beginPath();
-        this.strokeStyle = 'rgb(59, 31, 43)';
-        this.fillStyle = 'rgb(70, 99, 101)';
-        this.lineWidth = 3;
+        this.strokeStyle = 'rgb(143, 255, 220)';
+        this.fillStyle = 'rgb(55, 214, 163)';
+        this.shadowColor = 'rgba(75, 243, 188, 0.55)';
+        this.shadowBlur = 8;
+        this.lineWidth = 2;
 
         this.moveTo(a.x, a.y);
         this.lineTo(b.x, b.y);
@@ -100,6 +95,7 @@ CanvasRenderingContext2D.prototype.drawTriangles = function drawTriangles(triang
         this.stroke();
         this.fill();
         this.closePath();
+        this.shadowBlur = 0;
     }
 };
 
@@ -107,9 +103,12 @@ CanvasRenderingContext2D.prototype.drawCircles = function drawCircles(circleData
     for (const circle of circleData) {
         this.beginPath();
         this.arc(circle.m.x, circle.m.y, circle.radius, 0, 2.0 * Math.PI);
-        this.fillStyle = 'rgb(148, 157, 106)';
+        this.fillStyle = 'rgb(217, 255, 98)';
+        this.shadowColor = 'rgba(217, 255, 98, 0.65)';
+        this.shadowBlur = 10;
         this.fill();
         this.closePath();
+        this.shadowBlur = 0;
     }
 }
 

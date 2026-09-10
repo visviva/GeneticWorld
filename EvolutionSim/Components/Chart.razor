@@ -1,42 +1,34 @@
-﻿@using EvolutionSim.Utility
+@using EvolutionSim.Utility
 
-<ApexChart @ref=chart
-           TItem="EvolutionStatistics"
-           Title="Acquired Food per Generation"
-           Debug >
+<div class="evolution-chart">
+    <ApexChart @ref="chart" TItem="EvolutionStatistics">
+        <ApexPointSeries TItem="EvolutionStatistics"
+                         Items="Statistics"
+                         Name="Mean"
+                         SeriesType="SeriesType.Line"
+                         XValue="@(e => e.Cycle)"
+                         YValue="@(e => Math.Round((decimal)e.Mean, 2))" />
 
+        <ApexPointSeries TItem="EvolutionStatistics"
+                         Items="Statistics"
+                         Name="Best"
+                         SeriesType="SeriesType.Line"
+                         XValue="@(e => e.Cycle)"
+                         YValue="@(e => Math.Round((decimal)e.Max, 2))" />
 
-    <ApexPointSeries TItem="EvolutionStatistics"
-                     Items="Statistics"
-                     Name="Mean"
-                     SeriesType="SeriesType.Line"
-                     XValue="@(e => e.Cycle)"
-                     YValue="@(e => Math.Round((decimal)e.Mean,2))"
-                     ShowDataLabels />
+        <ApexPointSeries TItem="EvolutionStatistics"
+                         Items="Statistics"
+                         Name="Minimum"
+                         SeriesType="SeriesType.Line"
+                         XValue="@(e => e.Cycle)"
+                         YValue="@(e => Math.Round((decimal)e.Min, 2))" />
+    </ApexChart>
+</div>
 
-     <ApexPointSeries TItem="EvolutionStatistics"
-                      Items="Statistics"
-                      Name="Max"
-                      SeriesType="SeriesType.Line"
-                      XValue="@(e => e.Cycle)"
-                      YValue="@(e => Math.Round((decimal)e.Max,2))"
-                      ShowDataLabels />
-
-     <ApexPointSeries TItem="EvolutionStatistics"
-                      Items="Statistics"
-                      Name="Min"
-                      SeriesType="SeriesType.Line"
-                      XValue="@(e => e.Cycle)"
-                      YValue="@(e => Math.Round((decimal)e.Min,2))"
-                      ShowDataLabels />
-
-
- </ApexChart>
-
- @code {
+@code {
     public List<EvolutionStatistics> Statistics { get; set; } = [];
 
-    private ApexChart<EvolutionStatistics> chart;
+    private ApexChart<EvolutionStatistics> chart = null!;
 
     public async Task AddStatistics(IReadOnlyList<EvolutionStatistics> stats)
     {

@@ -1,0 +1,4 @@
+.evolution-chart { min-height: 300px; padding: 12px; }
+.evolution-chart ::deep .apexcharts-text,
+.evolution-chart ::deep .apexcharts-legend-text { fill: var(--text-muted) !important; color: var(--text-muted) !important; }
+.evolution-chart ::deep .apexcharts-gridline { stroke: rgba(170, 222, 202, 0.1); }

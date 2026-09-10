@@ -1,13 +1,27 @@
-﻿@inherits LayoutComponentBase
-<div class="page">
-    <main>
-        <div class="top-row px-4">
-            <NavLink href="about">About</NavLink>
-            <a href="https://github.com/visviva" target="_blank">Github</a>
-        </div>
+@inherits LayoutComponentBase
 
-        <article class="content px-4">
-            @Body
-        </article>
+<FluentDesignTheme Mode="DesignThemeModes.Dark" CustomColor="#4bf3bc">
+<div class="page-shell">
+    <header class="site-header">
+        <NavLink class="brand" href="" Match="NavLinkMatch.All" aria-label="Genetic World home">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span>Genetic World</span>
+        </NavLink>
+
+        <nav aria-label="Primary navigation">
+            <NavLink href="" Match="NavLinkMatch.All">Observatory</NavLink>
+            <NavLink href="about">About</NavLink>
+            <a href="https://github.com/visviva/GeneticWorld" target="_blank" rel="noopener noreferrer">Source <span aria-hidden="true">↗</span></a>
+        </nav>
+    </header>
+
+    <main class="content">
+        @Body
     </main>
+
+    <footer class="site-footer">
+        <span>Genetic World</span>
+        <span>Neural evolution, rendered live.</span>
+    </footer>
 </div>
+</FluentDesignTheme>

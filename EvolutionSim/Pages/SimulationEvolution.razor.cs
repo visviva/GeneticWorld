@@ -20,10 +20,14 @@ public partial class SimulationEvolution
     private int _canvasHeight { get; set; } = 0;
     private int _progress => (int)(_simulation.Percentage * 100.0);
     private int _lastRenderedProgress = -1;
+    private bool _isTraining;
+    private int _generation => _simulation.Cycle + 1;
+    private int _bestScore => _simulation.World.Animals.Count == 0 ? 0 : _simulation.World.Animals.Max(animal => animal.Satiation);
+    private double _meanScore => _simulation.World.Animals.Count == 0 ? 0 : _simulation.World.Animals.Average(animal => animal.Satiation);
 
     private Simulation.Simulation _simulation = new(new RandomGen());
 
-    EvolutionSim.Components.Chart _chart = new();
+    private EvolutionSim.Components.Chart _chart = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -34,10 +38,10 @@ public partial class SimulationEvolution
         }
     }
 
-    private void AddNewStatisticsSet(object? sender, EvolutionStatistics statistics)
+    private async void AddNewStatisticsSet(object? sender, EvolutionStatistics statistics)
     {
         List<EvolutionStatistics> listStats = [statistics];
-        _chart.AddStatistics(listStats);
+        await InvokeAsync(() => _chart.AddStatistics(listStats));
     }
 
     [JSInvokable]
@@ -81,9 +85,17 @@ public partial class SimulationEvolution
 
     public async Task Train()
     {
-        await JSRuntime.InvokeAsync<object>("pauseSimulation");
+        if (_isTraining)
+        {
+            return;
+        }
+
+        _isTraining = true;
+        StateHasChanged();
+
         try
         {
+            await JSRuntime.InvokeAsync<object>("pauseSimulation");
             var stepsPerBatch = Math.Max(1, _simulation.GenerationLength / 100);
             var generationComplete = false;
 
@@ -109,15 +121,23 @@ public partial class SimulationEvolution
         }
         finally
         {
+            _isTraining = false;
+            StateHasChanged();
             await JSRuntime.InvokeAsync<object>("resumeSimulation");
         }
     }
 
-    public void Restart()
+    public async Task Restart()
     {
+        if (_isTraining)
+        {
+            return;
+        }
+
         _simulation = new(new RandomGen());
         _simulation.BeforeEvolutionHook += AddNewStatisticsSet;
-        _chart.Clear();
+        _lastRenderedProgress = -1;
+        await _chart.Clear();
         StateHasChanged();
     }
 }

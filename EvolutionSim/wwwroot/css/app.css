@@ -1,5 +1,42 @@
-html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+:root {
+    color-scheme: dark;
+    --page: #07110f;
+    --surface: rgba(12, 28, 23, 0.9);
+    --surface-raised: rgba(18, 38, 31, 0.72);
+    --line: rgba(170, 222, 202, 0.105);
+    --text-strong: #edfff8;
+    --text: #c3d8d0;
+    --text-muted: #88a198;
+    --accent: #4bf3bc;
+    --accent-soft: #adffe3;
+    --nutrient: #d9ff62;
+}
+
+html {
+    min-width: 320px;
+    background: var(--page);
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    background:
+        radial-gradient(circle at 78% -10%, rgba(75, 243, 188, 0.1), transparent 28rem),
+        radial-gradient(circle at -8% 34%, rgba(74, 133, 112, 0.07), transparent 26rem),
+        var(--page);
+    color: var(--text);
+    font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+::selection {
+    background: rgba(75, 243, 188, 0.25);
+    color: var(--text-strong);
 }
 
 h1:focus {
@@ -7,7 +44,7 @@ h1:focus {
 }
 
 a, .btn-link {
-    color: #0071c1;
+    color: var(--accent);
 }
 
 .btn-primary {
@@ -20,9 +57,7 @@ a, .btn-link {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-.content {
-    padding-top: 1.1rem;
-}
+.content { min-width: 0; }
 
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;

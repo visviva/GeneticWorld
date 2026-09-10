@@ -1,114 +1,206 @@
-﻿@page "/"
+@page "/"
 @using EvolutionSim.Components
 @inject IJSRuntime JSRuntime
-@using static Simulation.Parameters
 
-<PageTitle>Simulation</PageTitle>
+<PageTitle>Genetic World · Evolution Observatory</PageTitle>
 
-<div class="centered-div">
-    <h3>Simulation</h3>
-</div>
+<div class="observatory">
+    <section class="intro" aria-labelledby="page-title">
+        <div>
+            <div class="eyebrow"><span></span> Evolution observatory</div>
+            <h1 id="page-title">Watch instinct<br /><em>take shape.</em></h1>
+        </div>
+        <div class="intro-copy">
+            <p>
+                A living population of neural agents learns to seek food through
+                selection, crossover, and mutation—one generation at a time.
+            </p>
+            <a class="text-link" href="https://pwy.io/posts/learning-to-fly-pt1/" target="_blank" rel="noopener noreferrer">
+                Read the inspiration <span aria-hidden="true">↗</span>
+            </a>
+        </div>
+    </section>
 
-<div id="explanation" class="centered-div">
-This page showcases a C# Blazor WASM implementation of an evolutionary simulation where artificial arrow-like birds learn to survive by finding food in a dynamic environment.
-Through neural networks and genetic algorithms, these digital entities evolve over time, exhibiting increasingly complex behaviors.
-This simulation demonstrates the principles of artificial intelligence and evolution in an interactive format, highlighting the adaptability and learning capabilities of artificial life in a virtual ecosystem.
-It is designed after the awesome tutorial series 
-</div>
-<div class="centered-div" style="margin: auto auto 10px 10px">
-    <a href="https://pwy.io/posts/learning-to-fly-pt1/">Learning to Fly: Let's simulate evolution in Rust! </a>.
-</div>
-
-<div id="simulationCanvas">
-   <canvas id="theCanvas"></canvas>
-</div>
-
-<div class="container" style="width: 100%">
-    <ProgressBar Label="Development of current generation:" Progress="_progress" />
-</div>
-
-<div class="container">
-    <FluentTabs Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" Style="width: 100%; flex-grow: 1; margin: 0 auto;">
-
-        <FluentTab Label="General" Id="tab-v1" Style="flex-grow: 1; margin: 0 auto;">
-            <FluentGrid>
-
-                <FluentGridItem xs="12" sm="6">
-                    <ButtonCard Title="Train Animals" ButtonLabel="Train" OnClick="Train" Content="Training is used to fast-forward a whole generation.">
-                        <div class="warning-box">
-                            <b>Warning:</b> The training of a whole generation might take some time!
-                        </div>
-                    </ButtonCard>       
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <ButtonCard Title="Restart" ButtonLabel="Restart" OnClick="Restart" Content="Deletes all animals and restarts the simulation." />
-                </FluentGridItem>
-
-            </FluentGrid>
-        </FluentTab>
-
-        <FluentTab Label="Parameters" Id="tab-v2" Style="flex-grow: 1; margin: 0 auto;">
-            <FluentGrid>
-
-                <FluentGridItem xs="12" sm="6">
-                    <ParameterCardInt Title="Number of Birds" Content="The number of birds in the world." @bind-Value=Simulation.Parameters.NumberOfBirds />
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <ParameterCardInt Title="Number of Foods" Content="The amount of available food for the birds." @bind-Value=Simulation.Parameters.NumberOfFoods />
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <ParameterCardDouble Title="Minimal Bird Speed" Content="The minimum speed of a bird." @bind-Value=Simulation.Parameters.SpeedMin />
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <ParameterCardDouble Title="Maximal Bird Speed" Content="The maximal speed of a bird." @bind-Value=Simulation.Parameters.SpeedMax />
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <ParameterCardDouble Title="Bird Speed Acceleration" Content="The acceleration of the speed of a bird." @bind-Value=Simulation.Parameters.SpeedAccel />
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <ParameterCardDouble Title="Bird Rotation Acceleration" Content="The acceleration of the rotation of a bird." @bind-Value=Simulation.Parameters.RotationAccel />
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <ParameterCardInt Title="Cycles per Generation" Content="The number of calculations of the world until the next evolution step." @bind-Value=Simulation.Parameters.GenerationLength />
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <ParameterCardInt Title="Neurons" Content="The number of neurons in a birds brain." @bind-Value=Simulation.Parameters.Neurons />
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <ParameterCardInt Title="Cells per Eye" Content="The number of cells in a birds eye. It defines the resolution of how good a bird can see and detect the direction of food." @bind-Value=Simulation.Parameters.EyeCells />
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <ParameterCardDouble Title="Field of View Range" Content="The maximum distance a bird can see." @bind-Value=Simulation.Parameters.FovRange />
-                </FluentGridItem>
-
-                <FluentGridItem xs="12" sm="6">
-                    <ParameterCardDouble Title="Field of View Angle" Content="The angle of the field of view." @bind-Value=Simulation.Parameters.FovAngle />
-                </FluentGridItem>
-
-            </FluentGrid>
-        </FluentTab>
-
-        <FluentTab Label="Statistics" Id="tab-v3" Style="flex-grow: 1; margin: 0 auto;">
-            @if(_chart.Statistics.Count == 0)
-            {
-                <div class="info-box">
-                    <b>Info:</b> Wait until the first generation is complete and ready to evolve to see some data.
-                </div>
-            }
-            <div style="margin: 20px auto">
-                <Chart @ref=_chart />
+    <section class="world-card" aria-labelledby="world-title">
+        <div class="world-toolbar">
+            <div>
+                <div class="section-kicker">Live habitat</div>
+                <h2 id="world-title">World 01</h2>
             </div>
-        </FluentTab>
+            <div class="live-state @( _isTraining ? "training" : "")">
+                <span class="pulse-dot"></span>
+                @(_isTraining ? "Fast-forwarding" : "Running live")
+            </div>
+        </div>
 
-    </FluentTabs>
+        <div class="world-layout">
+            <div class="canvas-column">
+                <div id="simulationCanvas" class="canvas-shell">
+                    <canvas id="theCanvas" aria-label="Live evolutionary simulation"></canvas>
+                    <div class="canvas-legend" aria-hidden="true">
+                        <span><i class="legend-agent"></i> Agents</span>
+                        <span><i class="legend-food"></i> Nutrients</span>
+                    </div>
+                    <div class="coordinate-tag" aria-hidden="true">TOROIDAL FIELD · 1 × 1</div>
+                </div>
+
+                <ProgressBar Label="Generation development" Progress="_progress" />
+            </div>
+
+            <aside class="telemetry" aria-label="Current simulation telemetry">
+                <div class="telemetry-head">
+                    <span>Telemetry</span>
+                    <span class="telemetry-code">GW-01</span>
+                </div>
+
+                <div class="metric featured">
+                    <span class="metric-label">Generation</span>
+                    <strong>@_generation.ToString("D3")</strong>
+                    <span class="metric-note">Current evolutionary cycle</span>
+                </div>
+
+                <div class="metric-pair">
+                    <div class="metric">
+                        <span class="metric-label">Agents</span>
+                        <strong>@_simulation.World.Animals.Count</strong>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Nutrients</span>
+                        <strong>@_simulation.World.Foods.Count</strong>
+                    </div>
+                </div>
+
+                <div class="metric-pair">
+                    <div class="metric">
+                        <span class="metric-label">Best score</span>
+                        <strong>@_bestScore</strong>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Mean score</span>
+                        <strong>@_meanScore.ToString("0.0")</strong>
+                    </div>
+                </div>
+
+                <div class="action-stack">
+                    <button class="control-button primary" @onclick="Train" disabled="@_isTraining">
+                        <span class="button-symbol" aria-hidden="true">»</span>
+                        <span>
+                            <strong>@(_isTraining ? "Training…" : "Advance generation")</strong>
+                            <small>Fast-forward to selection</small>
+                        </span>
+                    </button>
+                    <button class="control-button secondary" @onclick="Restart" disabled="@_isTraining">
+                        <span class="button-symbol" aria-hidden="true">↻</span>
+                        <span>
+                            <strong>Restart experiment</strong>
+                            <small>Seed a fresh population</small>
+                        </span>
+                    </button>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <section class="workspace" aria-label="Evolution workspace">
+        <FluentTabs Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" Class="lab-tabs">
+            <FluentTab Label="Analytics" Id="analytics-tab">
+                <div class="tab-panel analytics-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <div class="section-kicker">Population fitness</div>
+                            <h2>Evolution over time</h2>
+                        </div>
+                        <p>Food collected per generation reveals which behaviors survive.</p>
+                    </div>
+
+                    @if (_chart.Statistics.Count == 0)
+                    {
+                        <div class="empty-state">
+                            <span class="empty-orbit" aria-hidden="true"></span>
+                            <div>
+                                <strong>Awaiting the first generation</strong>
+                                <p>Let the habitat run or advance once to begin plotting fitness.</p>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="chart-frame">
+                        <Chart @ref="_chart" />
+                    </div>
+                </div>
+            </FluentTab>
+
+            <FluentTab Label="Lab parameters" Id="parameters-tab">
+                <div class="tab-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <div class="section-kicker">Experiment controls</div>
+                            <h2>Tune the ecosystem</h2>
+                        </div>
+                        <p>Adjust the population, movement model, and neural architecture.</p>
+                    </div>
+
+                    <div class="parameter-section">
+                        <div class="parameter-heading">
+                            <span>01</span>
+                            <div><strong>Population</strong><small>Scale and duration</small></div>
+                        </div>
+                        <div class="parameter-grid three-columns">
+                            <ParameterCardInt Title="Agents" Content="Population size" @bind-Value="Simulation.Parameters.NumberOfBirds" />
+                            <ParameterCardInt Title="Nutrients" Content="Food available in the world" @bind-Value="Simulation.Parameters.NumberOfFoods" />
+                            <ParameterCardInt Title="Generation length" Content="Simulation steps per cycle" @bind-Value="Simulation.Parameters.GenerationLength" />
+                        </div>
+                    </div>
+
+                    <div class="parameter-section">
+                        <div class="parameter-heading">
+                            <span>02</span>
+                            <div><strong>Movement</strong><small>Speed and agility</small></div>
+                        </div>
+                        <div class="parameter-grid four-columns">
+                            <ParameterCardDouble Title="Minimum speed" Content="Lower movement limit" @bind-Value="Simulation.Parameters.SpeedMin" />
+                            <ParameterCardDouble Title="Maximum speed" Content="Upper movement limit" @bind-Value="Simulation.Parameters.SpeedMax" />
+                            <ParameterCardDouble Title="Speed response" Content="Acceleration per step" @bind-Value="Simulation.Parameters.SpeedAccel" />
+                            <ParameterCardDouble Title="Turn response" Content="Rotation per step" @bind-Value="Simulation.Parameters.RotationAccel" />
+                        </div>
+                    </div>
+
+                    <div class="parameter-section">
+                        <div class="parameter-heading">
+                            <span>03</span>
+                            <div><strong>Perception & brain</strong><small>Neural complexity</small></div>
+                        </div>
+                        <div class="parameter-grid four-columns">
+                            <ParameterCardInt Title="Hidden neurons" Content="Brain processing capacity" @bind-Value="Simulation.Parameters.Neurons" />
+                            <ParameterCardInt Title="Eye cells" Content="Visual resolution" @bind-Value="Simulation.Parameters.EyeCells" />
+                            <ParameterCardDouble Title="View range" Content="Maximum sight distance" @bind-Value="Simulation.Parameters.FovRange" />
+                            <ParameterCardDouble Title="View angle" Content="Width of visual field" @bind-Value="Simulation.Parameters.FovAngle" />
+                        </div>
+                    </div>
+
+                    <div class="parameter-note">
+                        <span aria-hidden="true">i</span>
+                        <p><strong>Restart after structural changes.</strong> Population and brain topology settings initialize with a new experiment.</p>
+                    </div>
+                </div>
+            </FluentTab>
+
+            <FluentTab Label="How it works" Id="guide-tab">
+                <div class="tab-panel guide-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <div class="section-kicker">The evolutionary loop</div>
+                            <h2>Simple rules, emergent instinct</h2>
+                        </div>
+                    </div>
+                    <div class="process-grid">
+                        <article><span>01</span><h3>Perceive</h3><p>Eye cells encode nearby nutrients into directional neural inputs.</p></article>
+                        <article><span>02</span><h3>Act</h3><p>The network translates perception into proportional speed and steering.</p></article>
+                        <article><span>03</span><h3>Select</h3><p>Agents that collect more food are more likely to reproduce.</p></article>
+                        <article><span>04</span><h3>Evolve</h3><p>Crossover and mutation explore a new generation of behaviors.</p></article>
+                    </div>
+                </div>
+            </FluentTab>
+        </FluentTabs>
+    </section>
 </div>
