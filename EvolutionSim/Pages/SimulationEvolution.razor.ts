@@ -10,7 +10,7 @@ declare global {
     }
 
     interface CanvasRenderingContext2D {
-        drawTriangles(triangleData: Triangle[]): void;
+        drawCreatures(creatureData: Creature[], time: number): void;
         drawCircles(circleData: Circle[]): void;
         clear(): void;
     }
@@ -62,14 +62,14 @@ interface Circle {
     radius: number;
 }
 
-interface Triangle {
-    a: Point;
-    b: Point;
-    c: Point;
+interface Creature {
+    m: Point;
+    heading: number;
+    size: number;
 }
 
 interface RenderInformation {
-    triangles: Triangle[];
+    creatures: Creature[];
     circles: Circle[];
 }
 
@@ -77,25 +77,80 @@ CanvasRenderingContext2D.prototype.clear = function clearCanvas(): void {
     this.fillStyle = 'rgb(6, 16, 14)';
     this.fillRect(0, 0, this.canvas.width, this.canvas.height);
 }
-CanvasRenderingContext2D.prototype.drawTriangles = function drawTriangles(triangleData: Triangle[]): void {
-    for (const triangle of triangleData) {
-        const { a, b, c } = triangle;
+CanvasRenderingContext2D.prototype.drawCreatures = function drawCreatures(creatureData: Creature[], time: number): void {
+    for (let index = 0; index < creatureData.length; index++) {
+        const creature = creatureData[index];
+        const { m, heading, size } = creature;
+        const sway = Math.sin(time * 0.006 + index * 1.73) * size * 0.08;
 
+        this.save();
+        this.translate(m.x, m.y);
+        this.rotate(heading);
+        this.lineCap = 'round';
+        this.lineJoin = 'round';
+
+        // Four trailing feelers give the silhouette an organic, jellyfish-like motion.
         this.beginPath();
-        this.strokeStyle = 'rgb(143, 255, 220)';
-        this.fillStyle = 'rgb(55, 214, 163)';
-        this.shadowColor = 'rgba(75, 243, 188, 0.55)';
-        this.shadowBlur = 8;
-        this.lineWidth = 2;
-
-        this.moveTo(a.x, a.y);
-        this.lineTo(b.x, b.y);
-        this.lineTo(c.x, c.y);
-        this.closePath();
+        this.strokeStyle = 'rgba(75, 243, 188, 0.68)';
+        this.lineWidth = Math.max(1.2, size * 0.045);
+        for (const side of [-1, 1]) {
+            this.moveTo(side * size * 0.10, -size * 0.23);
+            this.quadraticCurveTo(side * size * 0.18 - sway * 0.35, -size * 0.43, side * size * 0.10 + sway, -size * 0.62);
+            this.moveTo(side * size * 0.22, -size * 0.13);
+            this.quadraticCurveTo(side * size * 0.40 + sway * 0.2, -size * 0.32, side * size * 0.42 - sway * 0.55, -size * 0.47);
+        }
         this.stroke();
+
+        // These two long sensory tentacles replace the triangle's forward tip.
+        this.beginPath();
+        this.strokeStyle = 'rgb(126, 255, 215)';
+        this.lineWidth = Math.max(1.4, size * 0.055);
+        for (const side of [-1, 1]) {
+            this.moveTo(side * size * 0.13, size * 0.22);
+            this.bezierCurveTo(
+                side * size * 0.20,
+                size * 0.44,
+                side * size * 0.30 + sway * 0.35,
+                size * 0.68,
+                side * size * 0.25 + sway * 0.18,
+                size * 0.88);
+        }
+        this.stroke();
+
+        // Small luminous receptors make the forward direction readable at a glance.
+        for (const side of [-1, 1]) {
+            this.beginPath();
+            this.arc(side * size * 0.25 + sway * 0.18, size * 0.88, Math.max(1.5, size * 0.055), 0, Math.PI * 2);
+            this.fillStyle = 'rgb(217, 255, 98)';
+            this.fill();
+        }
+
+        // Compact oval body with a soft bioluminescent shell.
+        this.beginPath();
+        this.shadowColor = 'rgba(75, 243, 188, 0.5)';
+        this.shadowBlur = 7;
+        this.ellipse(0, 0, size * 0.30, size * 0.36, 0, 0, Math.PI * 2);
+        this.fillStyle = 'rgb(38, 183, 139)';
         this.fill();
-        this.closePath();
+        this.strokeStyle = 'rgb(155, 255, 224)';
+        this.lineWidth = Math.max(1.3, size * 0.05);
+        this.stroke();
         this.shadowBlur = 0;
+
+        // A translucent inner membrane and three dark sensory eyes add alien detail.
+        this.beginPath();
+        this.ellipse(0, -size * 0.035, size * 0.19, size * 0.24, 0, 0, Math.PI * 2);
+        this.fillStyle = 'rgba(174, 255, 226, 0.2)';
+        this.fill();
+
+        for (const eyeX of [-0.13, 0, 0.13]) {
+            this.beginPath();
+            this.ellipse(size * eyeX, size * 0.11, Math.max(1.1, size * 0.035), Math.max(1.6, size * 0.055), 0, 0, Math.PI * 2);
+            this.fillStyle = 'rgb(5, 31, 25)';
+            this.fill();
+        }
+
+        this.restore();
     }
 };
 
@@ -122,7 +177,7 @@ async function redraw(time: number): Promise<void> {
         let canvasContext = window.simulation.canvas.getContext('2d');
         canvasContext.clear();
         canvasContext.drawCircles(world.circles);
-        canvasContext.drawTriangles(world.triangles);
+        canvasContext.drawCreatures(world.creatures, time);
     } catch (e) {
         console.error('Error updating simulation:', e);
     } finally {

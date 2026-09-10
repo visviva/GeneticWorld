@@ -7,11 +7,11 @@ public record struct RenderPoint(int x, int y)
     public RenderPoint(Point3d point) : this((int)point.X, (int)point.Y) { }
 }
 
-public record struct RenderTriangle(RenderPoint a, RenderPoint b, RenderPoint c);
+public record struct RenderCreature(RenderPoint m, double heading, double size);
 
 public record struct RenderCircle(RenderPoint m, int radius);
 
-public record struct RenderInformation(List<RenderTriangle> triangles, List<RenderCircle> circles);
+public record struct RenderInformation(List<RenderCreature> creatures, List<RenderCircle> circles);
 
 public static class Utility
 {

@@ -57,21 +57,20 @@ public partial class SimulationEvolution
     {
         _simulation.step();
 
-        double size = _canvasWidth * 0.02;
+        double size = _canvasWidth * 0.016;
         int radius = (int)(_canvasWidth * 0.006);
 
-        var triangles = _simulation.World.Animals.Select(animal =>
+        var creatures = _simulation.World.Animals.Select(animal =>
         {
-            var visualizedAnimal = Utility.Utility.ConstructTriangleFromIncenter(Utility.Utility.ScalePointToCanvas(animal.Position, _canvasWidth, _canvasHeight), size);
-            visualizedAnimal = visualizedAnimal.Rotate(Rotation.FromEulerAngles(0, 0, Math.PI, "xyz"), visualizedAnimal.Incenter);
-            visualizedAnimal = visualizedAnimal.Rotate(animal.Rotation, visualizedAnimal.Incenter);
-            return new RenderTriangle(new(visualizedAnimal.A), new(visualizedAnimal.B), new(visualizedAnimal.C));
+            var position = Utility.Utility.ScalePointToCanvas(animal.Position, _canvasWidth, _canvasHeight);
+            var heading = animal.Rotation.ToEulerAngles("xyz")[2];
+            return new RenderCreature(new(position), heading, size);
         }).ToList();
 
 
         var circles = _simulation.World.Foods.Select(f => new RenderCircle(new(Utility.Utility.ScalePointToCanvas(f.Position, _canvasWidth, _canvasHeight)), radius)).ToList();
 
-        var newWorld = new RenderInformation(triangles, circles);
+        var newWorld = new RenderInformation(creatures, circles);
 
         if (_lastRenderedProgress != _progress)
         {
