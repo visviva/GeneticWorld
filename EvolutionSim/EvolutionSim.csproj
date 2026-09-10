@@ -8,6 +8,7 @@
 
   <PropertyGroup>
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,15 +25,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Pages\SimulationEvolution.razor.js">
+    <Content Remove="wwwroot/js/SimulationEvolution.js" />
+    <Content Include="wwwroot/js/SimulationEvolution.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </None>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Simulation\Simulation.csproj" />
   </ItemGroup>
+
+  <Target Name="CompileTypeScriptForStaticWebAssets"
+          BeforeTargets="ResolveProjectStaticWebAssets">
+    <MakeDir Directories="$(MSBuildProjectDirectory)/wwwroot/js" />
+    <Exec Command="node &quot;$(TSJavaScriptFile)&quot; --project &quot;$(MSBuildProjectDirectory)/tsconfig.json&quot;" />
+  </Target>
 
 </Project>

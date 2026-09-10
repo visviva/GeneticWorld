@@ -4,6 +4,7 @@
         "noEmitOnError": true,
         "removeComments": false,
         "sourceMap": true,
+        "outDir": "wwwroot/js",
         "target": "ES2016",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
@@ -13,5 +14,8 @@
     "exclude": [
         "node_modules",
         "wwwroot"
+    ],
+    "include": [
+        "Pages/**/*.ts"
     ]
 }

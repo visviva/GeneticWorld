@@ -364,5 +364,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/EvolutionSim/Pages/SimulationEvolution.razor.js
-/EvolutionSim/Pages/SimulationEvolution.razor.js
+/EvolutionSim/wwwroot/js/SimulationEvolution.js
+/EvolutionSim/wwwroot/js/SimulationEvolution.js.map
