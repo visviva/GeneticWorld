@@ -78,6 +78,23 @@ public partial class EyeTest
         Assert.IsTrue(vision.All(value => value == 0.0));
     }
 
+    [TestMethod]
+    public void FoodAcrossWorldEdgeUsesWrappedDistance()
+    {
+        _testEye.FovRange = 0.05;
+        _testEye.FovAngle = 2 * Math.PI;
+
+        var eyePosition = new Point3d(0.99, 0.5, 0);
+        var eyeRotation = Rotation.FromEulerAngles(0, 0, 0, "xyz");
+
+        List<Food> foods = [new Food(new MockRandom())];
+        foods[0].Position = new Point3d(0.01, 0.5, 0);
+
+        var vision = _testEye.ProcessVision(eyePosition, eyeRotation, foods);
+
+        Assert.AreEqual(0.6, vision.Sum(), 1e-12);
+    }
+
     [DataTestMethod]
     [DataRow(Math.PI * 0.00, "         +   ")]
     [DataRow(Math.PI * 0.25, "        +    ")]
@@ -113,14 +130,14 @@ public partial class EyeTest
     [DataRow(0.7, 0.5, "   +     +   ")]
     [DataRow(0.6, 0.5, "    +   +    ")]
     [DataRow(0.5, 0.5, "    +   +    ")]
-    [DataRow(0.4, 0.5, "     + +     ")]
-    [DataRow(0.3, 0.5, "     . .     ")]
-    [DataRow(0.2, 0.5, "     . .     ")]
-    [DataRow(0.1, 0.5, "     . .     ")]
+    [DataRow(0.4, 0.5, "             ")]
+    [DataRow(0.3, 0.5, "             ")]
+    [DataRow(0.2, 0.5, "             ")]
+    [DataRow(0.1, 0.5, "             ")]
     [DataRow(0.0, 0.5, "             ")]
 
     // Checking the Y axis:
-    [DataRow(0.5, 0.0, "            +")]
+    [DataRow(0.5, 0.0, "+           +")]
     [DataRow(0.5, 0.1, "          + .")]
     [DataRow(0.5, 0.2, "         +  +")]
     [DataRow(0.5, 0.3, "        + +  ")]
@@ -129,7 +146,7 @@ public partial class EyeTest
     [DataRow(0.5, 0.7, "  + +        ")]
     [DataRow(0.5, 0.8, "+  +         ")]
     [DataRow(0.5, 0.9, ". +          ")]
-    [DataRow(0.5, 1.0, "+            ")]
+    [DataRow(0.5, 1.0, "+           +")]
     public void TestDifferentPositions(double x, double y, string expectedVision)
     {
         var eyePosition = new Point3d(x, y, 0);

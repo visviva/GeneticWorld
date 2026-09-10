@@ -81,8 +81,8 @@ public partial class Simulation
             var r0 = Math.Clamp(response[0], 0.0, 1.0) - 0.5;
             var r1 = Math.Clamp(response[1], 0.0, 1.0) - 0.5;
 
-            var speed = Math.Clamp(r0 + r1, -SpeedAccel, SpeedAccel);
-            var rotation = Math.Clamp(r0 - r1, -RotationAccel, RotationAccel);
+            var speed = (r0 + r1) * SpeedAccel;
+            var rotation = (r0 - r1) * RotationAccel;
 
             animal.Speed = Math.Clamp(animal.Speed + speed, SpeedMin, SpeedMax);
             var heading = animal.Rotation.ToEulerAngles("xyz")[2];
@@ -104,7 +104,7 @@ public partial class Simulation
         {
             foreach (var food in World.Foods)
             {
-                var distance = animal.Position.DistanceTo(food.Position);
+                var distance = WorldGeometry.Distance(animal.Position, food.Position);
 
                 if (distance <= 0.02)
                 {
@@ -119,30 +119,6 @@ public partial class Simulation
     {
         Vector3d movement = new Vector3d(0, animal.Speed, 0);
         Vector3d rotatedMovement = animal.Rotation * movement;
-        animal.Position = animal.Position.Translate(rotatedMovement);
-        WrapPosition(animal);
-    }
-
-    private static void WrapPosition(Animal animal)
-    {
-        if (animal.Position.X < 0)
-        {
-            animal.Position.X = 1;
-        }
-
-        if (animal.Position.X > 1)
-        {
-            animal.Position.X = 0;
-        }
-
-        if (animal.Position.Y < 0)
-        {
-            animal.Position.Y = 1;
-        }
-
-        if (animal.Position.Y > 1)
-        {
-            animal.Position.Y = 0;
-        }
+        animal.Position = WorldGeometry.Wrap(animal.Position.Translate(rotatedMovement));
     }
 }

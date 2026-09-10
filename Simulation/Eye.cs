@@ -103,15 +103,15 @@ public class Eye
 
         foreach (var food in foods)
         {
-            var vec = food.Position - position;
-            var distance = vec.ToVector.Norm;
+            var displacement = WorldGeometry.ShortestDisplacement(position, food.Position);
+            var distance = displacement.Norm;
 
             if (distance >= FovRange)
             {
                 continue;
             }
 
-            var angle = AngleToYAxis(vec.ToVector);
+            var angle = AngleToYAxis(displacement);
 
             angle -= rotation.ToEulerAngles("xyz")[2];
             angle = WrapAngle(angle, -Math.PI, Math.PI);

@@ -6,8 +6,8 @@ public static class Parameters
     public static int NumberOfFoods { get; set; } = 40;
     public static double SpeedMin { get; set; } = 0.001;
     public static double SpeedMax { get; set; } = 0.005;
-    public static double SpeedAccel { get; set; } = 0.2;
-    public static double RotationAccel { get; set; } = Math.PI / 2.0;
+    public static double SpeedAccel { get; set; } = 0.0008;
+    public static double RotationAccel { get; set; } = Math.PI / 60.0;
     public static int GenerationLength { get; set; } = 2500;
     public static int Neurons { get; set; } = 18;
     public static int EyeCells { get; set; } = 9;
